@@ -36,6 +36,44 @@ class GrpcTask final: public JudgeTask{
     return args->code();
   }
 
+  void set_compileerror(std::string err) const override{
+    JudgeReply reply;
+    reply.set_resulttype(JudgeReply_ResultType_COMPILE);
+    reply.mutable_compileresult()->set_compileerror(true);
+    reply.mutable_compileresult()->set_compileerrormessage(err);
+    writer->Write(reply);
+  }
+
+  bool check_token(std::string t) const override{
+    bool ret = t == args->token();
+    if(!ret){
+      JudgeReply reply;
+      reply.set_resulttype(JudgeReply_ResultType_JSTATUS);
+      reply.set_judgestatus(JudgeStatus::UNAUTHENTICATED);
+      writer->Write(reply);
+    }
+    return ret;
+  }
+
+  void set_status(uint32_t status) const override{
+    JudgeReply reply;
+    reply.set_resulttype(JudgeReply_ResultType_JSTATUS);
+
+    switch(status){
+      case STATUS_OK:
+        reply.set_judgestatus(JudgeStatus::OK);
+        break;
+      case STATUS_BUSY:
+        reply.set_judgestatus(JudgeStatus::BUSY);
+        break;
+      default:
+        LOG(FATAL)<<"invalid status";
+    }
+
+    writer->Write(reply);
+  }
+
+
   private:
     const JudgeArgs *args;
     ServerWriter<JudgeReply> *writer;
@@ -115,16 +153,18 @@ class WJudgerImpl final : public WJudger::WJudger::Service {
   Status Judge(ServerContext *context, const JudgeArgs *args, ServerWriter<JudgeReply> *writer) override {
     safecall(unshare, CLONE_FS);
 
+    judger->judge(GrpcTask(args, writer));
+
+    return Status::OK;
     /*
     for(Judger &judger: *judgers){
-      if(judger.token_match("123456")){ //TODO: add token in args
+      if(judger.token_match("123456")){
         judger.judge(GrpcTask(args, writer));
         return Status::OK;
       }
-    }*/
-    const JudgeReply reply;//TODO: reply no match
-    writer->Write(reply);
-    return Status::OK;
+    }
+    const JudgeReply reply;
+    writer->Write(reply);*/
   }
 
   Status Simple(ServerContext *context, const SimpleArgs *args, SimpleReply *reply) override{

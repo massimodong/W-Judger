@@ -24,13 +24,18 @@
 
 class JudgeTask
 {
-public:
-  virtual int language() const = 0;
-  virtual std::string code() const = 0;
+  public:
+    virtual int language() const = 0;
+    virtual std::string code() const = 0;
 
-protected:
+    virtual void set_compileerror(std::string) const = 0;
 
-private:
+    virtual bool check_token(std::string) const = 0;
+
+    virtual void set_status(uint32_t) const = 0;
+  protected:
+
+  private:
 
 };
 

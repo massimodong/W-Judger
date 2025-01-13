@@ -142,6 +142,9 @@ inline constexpr ExecuteResult::Impl_::Impl_(
         verdict_(
             &::google::protobuf::internal::fixed_address_empty_string,
             ::_pbi::ConstantInitialized()),
+        stderr_(
+            &::google::protobuf::internal::fixed_address_empty_string,
+            ::_pbi::ConstantInitialized()),
         msg_(
             &::google::protobuf::internal::fixed_address_empty_string,
             ::_pbi::ConstantInitialized()),
@@ -173,6 +176,9 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
 inline constexpr CompileResult::Impl_::Impl_(
     ::_pbi::ConstantInitialized) noexcept
       : testcases_{},
+        compileerrormessage_(
+            &::google::protobuf::internal::fixed_address_empty_string,
+            ::_pbi::ConstantInitialized()),
         compileerror_{false},
         _cached_size_{0} {}
 
@@ -201,7 +207,8 @@ inline constexpr JudgeReply::Impl_::Impl_(
       : _cached_size_{0},
         compileresult_{nullptr},
         executeresult_{nullptr},
-        resulttype_{static_cast< ::WJudger::JudgeReply_ResultType >(0)} {}
+        resulttype_{static_cast< ::WJudger::JudgeReply_ResultType >(0)},
+        judgestatus_{static_cast< ::WJudger::JudgeStatus >(0)} {}
 
 template <typename>
 PROTOBUF_CONSTEXPR JudgeReply::JudgeReply(::_pbi::ConstantInitialized)
@@ -280,8 +287,10 @@ const ::uint32_t
         ~0u,  // no _split_
         ~0u,  // no sizeof(Split)
         PROTOBUF_FIELD_OFFSET(::WJudger::JudgeReply, _impl_.resulttype_),
+        PROTOBUF_FIELD_OFFSET(::WJudger::JudgeReply, _impl_.judgestatus_),
         PROTOBUF_FIELD_OFFSET(::WJudger::JudgeReply, _impl_.compileresult_),
         PROTOBUF_FIELD_OFFSET(::WJudger::JudgeReply, _impl_.executeresult_),
+        ~0u,
         ~0u,
         0,
         1,
@@ -294,6 +303,7 @@ const ::uint32_t
         ~0u,  // no _split_
         ~0u,  // no sizeof(Split)
         PROTOBUF_FIELD_OFFSET(::WJudger::CompileResult, _impl_.compileerror_),
+        PROTOBUF_FIELD_OFFSET(::WJudger::CompileResult, _impl_.compileerrormessage_),
         PROTOBUF_FIELD_OFFSET(::WJudger::CompileResult, _impl_.testcases_),
         ~0u,  // no _has_bits_
         PROTOBUF_FIELD_OFFSET(::WJudger::ExecuteResult, _internal_metadata_),
@@ -308,6 +318,7 @@ const ::uint32_t
         PROTOBUF_FIELD_OFFSET(::WJudger::ExecuteResult, _impl_.memoryused_),
         PROTOBUF_FIELD_OFFSET(::WJudger::ExecuteResult, _impl_.score_),
         PROTOBUF_FIELD_OFFSET(::WJudger::ExecuteResult, _impl_.verdict_),
+        PROTOBUF_FIELD_OFFSET(::WJudger::ExecuteResult, _impl_.stderr_),
         PROTOBUF_FIELD_OFFSET(::WJudger::ExecuteResult, _impl_.msg_),
 };
 
@@ -316,9 +327,9 @@ static const ::_pbi::MigrationSchema
         {0, -1, -1, sizeof(::WJudger::SimpleArgs)},
         {12, -1, -1, sizeof(::WJudger::SimpleReply)},
         {28, -1, -1, sizeof(::WJudger::JudgeArgs)},
-        {42, 53, -1, sizeof(::WJudger::JudgeReply)},
-        {56, -1, -1, sizeof(::WJudger::CompileResult)},
-        {66, -1, -1, sizeof(::WJudger::ExecuteResult)},
+        {42, 54, -1, sizeof(::WJudger::JudgeReply)},
+        {58, -1, -1, sizeof(::WJudger::CompileResult)},
+        {69, -1, -1, sizeof(::WJudger::ExecuteResult)},
 };
 static const ::_pb::Message* const file_default_instances[] = {
     &::WJudger::_SimpleArgs_default_instance_._instance,
@@ -341,29 +352,31 @@ const char descriptor_table_protodef_wjudger_2eproto[] ABSL_ATTRIBUTE_SECTION_VA
     "put\030\010 \001(\t\"\207\001\n\tJudgeArgs\022\r\n\005token\030\001 \001(\t\022\014"
     "\n\004code\030\002 \001(\t\022#\n\010language\030\003 \001(\0162\021.WJudger"
     ".Language\022\021\n\ttimelimit\030\004 \001(\004\022\023\n\013memoryli"
-    "mit\030\005 \001(\001\022\020\n\010datapath\030\006 \001(\t\"\306\001\n\nJudgeRep"
+    "mit\030\005 \001(\001\022\020\n\010datapath\030\006 \001(\t\"\376\001\n\nJudgeRep"
     "ly\0222\n\nresultType\030\001 \001(\0162\036.WJudger.JudgeRe"
-    "ply.ResultType\022-\n\rcompileResult\030\002 \001(\0132\026."
-    "WJudger.CompileResult\022-\n\rexecuteResult\030\003"
-    " \001(\0132\026.WJudger.ExecuteResult\"&\n\nResultTy"
-    "pe\022\013\n\007COMPILE\020\000\022\013\n\007EXECUTE\020\001\"8\n\rCompileR"
-    "esult\022\024\n\014compileError\030\001 \001(\010\022\021\n\ttestcases"
-    "\030\002 \003(\t\"t\n\rExecuteResult\022\020\n\010testcase\030\001 \001("
-    "\t\022\020\n\010timeused\030\002 \001(\004\022\022\n\nmemoryused\030\003 \001(\001\022"
-    "\r\n\005score\030\004 \001(\r\022\017\n\007verdict\030\005 \001(\t\022\013\n\003msg\030\006"
-    " \001(\t*4\n\013JudgeStatus\022\006\n\002OK\020\000\022\023\n\017UNAUTHENT"
-    "ICATED\020\001\022\010\n\004BUSY\020\002*<\n\010Language\022\005\n\001C\020\000\022\007\n"
-    "\003CPP\020\001\022\n\n\006PASCAL\020\002\022\010\n\004JAVA\020\003\022\n\n\006PYTHON\020\004"
-    "2v\n\007WJudger\0224\n\005Judge\022\022.WJudger.JudgeArgs"
-    "\032\023.WJudger.JudgeReply\"\0000\001\0225\n\006Simple\022\023.WJ"
-    "udger.SimpleArgs\032\024.WJudger.SimpleReply\"\000"
-    "b\006proto3"
+    "ply.ResultType\022)\n\013judgeStatus\030\002 \001(\0162\024.WJ"
+    "udger.JudgeStatus\022-\n\rcompileResult\030\003 \001(\013"
+    "2\026.WJudger.CompileResult\022-\n\rexecuteResul"
+    "t\030\004 \001(\0132\026.WJudger.ExecuteResult\"3\n\nResul"
+    "tType\022\013\n\007JSTATUS\020\000\022\013\n\007COMPILE\020\001\022\013\n\007EXECU"
+    "TE\020\002\"U\n\rCompileResult\022\024\n\014compileError\030\001 "
+    "\001(\010\022\033\n\023compileErrorMessage\030\002 \001(\t\022\021\n\ttest"
+    "cases\030\003 \003(\t\"\204\001\n\rExecuteResult\022\020\n\010testcas"
+    "e\030\001 \001(\t\022\020\n\010timeused\030\002 \001(\004\022\022\n\nmemoryused\030"
+    "\003 \001(\001\022\r\n\005score\030\004 \001(\r\022\017\n\007verdict\030\005 \001(\t\022\016\n"
+    "\006stderr\030\006 \001(\t\022\013\n\003msg\030\007 \001(\t*4\n\013JudgeStatu"
+    "s\022\006\n\002OK\020\000\022\023\n\017UNAUTHENTICATED\020\001\022\010\n\004BUSY\020\002"
+    "*<\n\010Language\022\005\n\001C\020\000\022\007\n\003CPP\020\001\022\n\n\006PASCAL\020\002"
+    "\022\010\n\004JAVA\020\003\022\n\n\006PYTHON\020\0042v\n\007WJudger\0224\n\005Jud"
+    "ge\022\022.WJudger.JudgeArgs\032\023.WJudger.JudgeRe"
+    "ply\"\0000\001\0225\n\006Simple\022\023.WJudger.SimpleArgs\032\024"
+    ".WJudger.SimpleReply\"\000b\006proto3"
 };
 static ::absl::once_flag descriptor_table_wjudger_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_wjudger_2eproto = {
     false,
     false,
-    1088,
+    1190,
     descriptor_table_protodef_wjudger_2eproto,
     "wjudger.proto",
     &descriptor_table_wjudger_2eproto_once,
@@ -382,13 +395,14 @@ const ::google::protobuf::EnumDescriptor* JudgeReply_ResultType_descriptor() {
   return file_level_enum_descriptors_wjudger_2eproto[0];
 }
 PROTOBUF_CONSTINIT const uint32_t JudgeReply_ResultType_internal_data_[] = {
-    131072u, 0u, };
+    196608u, 0u, };
 bool JudgeReply_ResultType_IsValid(int value) {
-  return 0 <= value && value <= 1;
+  return 0 <= value && value <= 2;
 }
 #if (__cplusplus < 201703) && \
   (!defined(_MSC_VER) || (_MSC_VER >= 1900 && _MSC_VER < 1912))
 
+constexpr JudgeReply_ResultType JudgeReply::JSTATUS;
 constexpr JudgeReply_ResultType JudgeReply::COMPILE;
 constexpr JudgeReply_ResultType JudgeReply::EXECUTE;
 constexpr JudgeReply_ResultType JudgeReply::ResultType_MIN;
@@ -1561,7 +1575,13 @@ JudgeReply::JudgeReply(
   _impl_.executeresult_ = (cached_has_bits & 0x00000002u) ? ::google::protobuf::Message::CopyConstruct<::WJudger::ExecuteResult>(
                               arena, *from._impl_.executeresult_)
                         : nullptr;
-  _impl_.resulttype_ = from._impl_.resulttype_;
+  ::memcpy(reinterpret_cast<char *>(&_impl_) +
+               offsetof(Impl_, resulttype_),
+           reinterpret_cast<const char *>(&from._impl_) +
+               offsetof(Impl_, resulttype_),
+           offsetof(Impl_, judgestatus_) -
+               offsetof(Impl_, resulttype_) +
+               sizeof(Impl_::judgestatus_));
 
   // @@protoc_insertion_point(copy_constructor:WJudger.JudgeReply)
 }
@@ -1575,9 +1595,9 @@ inline void JudgeReply::SharedCtor(::_pb::Arena* arena) {
   ::memset(reinterpret_cast<char *>(&_impl_) +
                offsetof(Impl_, compileresult_),
            0,
-           offsetof(Impl_, resulttype_) -
+           offsetof(Impl_, judgestatus_) -
                offsetof(Impl_, compileresult_) +
-               sizeof(Impl_::resulttype_));
+               sizeof(Impl_::judgestatus_));
 }
 JudgeReply::~JudgeReply() {
   // @@protoc_insertion_point(destructor:WJudger.JudgeReply)
@@ -1628,15 +1648,15 @@ const ::google::protobuf::internal::ClassData* JudgeReply::GetClassData() const 
   return _class_data_.base();
 }
 PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
-const ::_pbi::TcParseTable<2, 3, 2, 0, 2> JudgeReply::_table_ = {
+const ::_pbi::TcParseTable<2, 4, 2, 0, 2> JudgeReply::_table_ = {
   {
     PROTOBUF_FIELD_OFFSET(JudgeReply, _impl_._has_bits_),
     0, // no _extensions_
-    3, 24,  // max_field_number, fast_idx_mask
+    4, 24,  // max_field_number, fast_idx_mask
     offsetof(decltype(_table_), field_lookup_table),
-    4294967288,  // skipmap
+    4294967280,  // skipmap
     offsetof(decltype(_table_), field_entries),
-    3,  // num_field_entries
+    4,  // num_field_entries
     2,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     _class_data_.base(),
@@ -1646,26 +1666,31 @@ const ::_pbi::TcParseTable<2, 3, 2, 0, 2> JudgeReply::_table_ = {
     ::_pbi::TcParser::GetTable<::WJudger::JudgeReply>(),  // to_prefetch
     #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
   }, {{
-    {::_pbi::TcParser::MiniParse, {}},
+    // .WJudger.ExecuteResult executeResult = 4;
+    {::_pbi::TcParser::FastMtS1,
+     {34, 1, 1, PROTOBUF_FIELD_OFFSET(JudgeReply, _impl_.executeresult_)}},
     // .WJudger.JudgeReply.ResultType resultType = 1;
     {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(JudgeReply, _impl_.resulttype_), 63>(),
      {8, 63, 0, PROTOBUF_FIELD_OFFSET(JudgeReply, _impl_.resulttype_)}},
-    // .WJudger.CompileResult compileResult = 2;
+    // .WJudger.JudgeStatus judgeStatus = 2;
+    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(JudgeReply, _impl_.judgestatus_), 63>(),
+     {16, 63, 0, PROTOBUF_FIELD_OFFSET(JudgeReply, _impl_.judgestatus_)}},
+    // .WJudger.CompileResult compileResult = 3;
     {::_pbi::TcParser::FastMtS1,
-     {18, 0, 0, PROTOBUF_FIELD_OFFSET(JudgeReply, _impl_.compileresult_)}},
-    // .WJudger.ExecuteResult executeResult = 3;
-    {::_pbi::TcParser::FastMtS1,
-     {26, 1, 1, PROTOBUF_FIELD_OFFSET(JudgeReply, _impl_.executeresult_)}},
+     {26, 0, 0, PROTOBUF_FIELD_OFFSET(JudgeReply, _impl_.compileresult_)}},
   }}, {{
     65535, 65535
   }}, {{
     // .WJudger.JudgeReply.ResultType resultType = 1;
     {PROTOBUF_FIELD_OFFSET(JudgeReply, _impl_.resulttype_), -1, 0,
     (0 | ::_fl::kFcSingular | ::_fl::kOpenEnum)},
-    // .WJudger.CompileResult compileResult = 2;
+    // .WJudger.JudgeStatus judgeStatus = 2;
+    {PROTOBUF_FIELD_OFFSET(JudgeReply, _impl_.judgestatus_), -1, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kOpenEnum)},
+    // .WJudger.CompileResult compileResult = 3;
     {PROTOBUF_FIELD_OFFSET(JudgeReply, _impl_.compileresult_), _Internal::kHasBitsOffset + 0, 0,
     (0 | ::_fl::kFcOptional | ::_fl::kMessage | ::_fl::kTvTable)},
-    // .WJudger.ExecuteResult executeResult = 3;
+    // .WJudger.ExecuteResult executeResult = 4;
     {PROTOBUF_FIELD_OFFSET(JudgeReply, _impl_.executeresult_), _Internal::kHasBitsOffset + 1, 1,
     (0 | ::_fl::kFcOptional | ::_fl::kMessage | ::_fl::kTvTable)},
   }}, {{
@@ -1693,7 +1718,9 @@ PROTOBUF_NOINLINE void JudgeReply::Clear() {
       _impl_.executeresult_->Clear();
     }
   }
-  _impl_.resulttype_ = 0;
+  ::memset(&_impl_.resulttype_, 0, static_cast<::size_t>(
+      reinterpret_cast<char*>(&_impl_.judgestatus_) -
+      reinterpret_cast<char*>(&_impl_.resulttype_)) + sizeof(_impl_.judgestatus_));
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
 }
@@ -1720,18 +1747,25 @@ PROTOBUF_NOINLINE void JudgeReply::Clear() {
                 1, this_._internal_resulttype(), target);
           }
 
+          // .WJudger.JudgeStatus judgeStatus = 2;
+          if (this_._internal_judgestatus() != 0) {
+            target = stream->EnsureSpace(target);
+            target = ::_pbi::WireFormatLite::WriteEnumToArray(
+                2, this_._internal_judgestatus(), target);
+          }
+
           cached_has_bits = this_._impl_._has_bits_[0];
-          // .WJudger.CompileResult compileResult = 2;
+          // .WJudger.CompileResult compileResult = 3;
           if (cached_has_bits & 0x00000001u) {
             target = ::google::protobuf::internal::WireFormatLite::InternalWriteMessage(
-                2, *this_._impl_.compileresult_, this_._impl_.compileresult_->GetCachedSize(), target,
+                3, *this_._impl_.compileresult_, this_._impl_.compileresult_->GetCachedSize(), target,
                 stream);
           }
 
-          // .WJudger.ExecuteResult executeResult = 3;
+          // .WJudger.ExecuteResult executeResult = 4;
           if (cached_has_bits & 0x00000002u) {
             target = ::google::protobuf::internal::WireFormatLite::InternalWriteMessage(
-                3, *this_._impl_.executeresult_, this_._impl_.executeresult_->GetCachedSize(), target,
+                4, *this_._impl_.executeresult_, this_._impl_.executeresult_->GetCachedSize(), target,
                 stream);
           }
 
@@ -1761,12 +1795,12 @@ PROTOBUF_NOINLINE void JudgeReply::Clear() {
           ::_pbi::Prefetch5LinesFrom7Lines(&this_);
           cached_has_bits = this_._impl_._has_bits_[0];
           if (cached_has_bits & 0x00000003u) {
-            // .WJudger.CompileResult compileResult = 2;
+            // .WJudger.CompileResult compileResult = 3;
             if (cached_has_bits & 0x00000001u) {
               total_size += 1 +
                             ::google::protobuf::internal::WireFormatLite::MessageSize(*this_._impl_.compileresult_);
             }
-            // .WJudger.ExecuteResult executeResult = 3;
+            // .WJudger.ExecuteResult executeResult = 4;
             if (cached_has_bits & 0x00000002u) {
               total_size += 1 +
                             ::google::protobuf::internal::WireFormatLite::MessageSize(*this_._impl_.executeresult_);
@@ -1777,6 +1811,11 @@ PROTOBUF_NOINLINE void JudgeReply::Clear() {
             if (this_._internal_resulttype() != 0) {
               total_size += 1 +
                             ::_pbi::WireFormatLite::EnumSize(this_._internal_resulttype());
+            }
+            // .WJudger.JudgeStatus judgeStatus = 2;
+            if (this_._internal_judgestatus() != 0) {
+              total_size += 1 +
+                            ::_pbi::WireFormatLite::EnumSize(this_._internal_judgestatus());
             }
           }
           return this_.MaybeComputeUnknownFieldsSize(total_size,
@@ -1816,6 +1855,9 @@ void JudgeReply::MergeImpl(::google::protobuf::MessageLite& to_msg, const ::goog
   if (from._internal_resulttype() != 0) {
     _this->_impl_.resulttype_ = from._impl_.resulttype_;
   }
+  if (from._internal_judgestatus() != 0) {
+    _this->_impl_.judgestatus_ = from._impl_.judgestatus_;
+  }
   _this->_impl_._has_bits_[0] |= cached_has_bits;
   _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
 }
@@ -1833,8 +1875,8 @@ void JudgeReply::InternalSwap(JudgeReply* PROTOBUF_RESTRICT other) {
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
   ::google::protobuf::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(JudgeReply, _impl_.resulttype_)
-      + sizeof(JudgeReply::_impl_.resulttype_)
+      PROTOBUF_FIELD_OFFSET(JudgeReply, _impl_.judgestatus_)
+      + sizeof(JudgeReply::_impl_.judgestatus_)
       - PROTOBUF_FIELD_OFFSET(JudgeReply, _impl_.compileresult_)>(
           reinterpret_cast<char*>(&_impl_.compileresult_),
           reinterpret_cast<char*>(&other->_impl_.compileresult_));
@@ -1862,6 +1904,7 @@ inline PROTOBUF_NDEBUG_INLINE CompileResult::Impl_::Impl_(
     ::google::protobuf::internal::InternalVisibility visibility, ::google::protobuf::Arena* arena,
     const Impl_& from, const ::WJudger::CompileResult& from_msg)
       : testcases_{visibility, arena, from.testcases_},
+        compileerrormessage_(arena, from.compileerrormessage_),
         _cached_size_{0} {}
 
 CompileResult::CompileResult(
@@ -1885,6 +1928,7 @@ inline PROTOBUF_NDEBUG_INLINE CompileResult::Impl_::Impl_(
     ::google::protobuf::internal::InternalVisibility visibility,
     ::google::protobuf::Arena* arena)
       : testcases_{visibility, arena},
+        compileerrormessage_(arena),
         _cached_size_{0} {}
 
 inline void CompileResult::SharedCtor(::_pb::Arena* arena) {
@@ -1899,6 +1943,7 @@ inline void CompileResult::SharedDtor(MessageLite& self) {
   CompileResult& this_ = static_cast<CompileResult&>(self);
   this_._internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
   ABSL_DCHECK(this_.GetArena() == nullptr);
+  this_._impl_.compileerrormessage_.Destroy();
   this_._impl_.~Impl_();
 }
 
@@ -1914,7 +1959,7 @@ constexpr auto CompileResult::InternalNewImpl_() {
                   ::google::protobuf::Message::internal_visibility()),
   });
   if (arena_bits.has_value()) {
-    return ::google::protobuf::internal::MessageCreator::ZeroInit(
+    return ::google::protobuf::internal::MessageCreator::CopyInit(
         sizeof(CompileResult), alignof(CompileResult), *arena_bits);
   } else {
     return ::google::protobuf::internal::MessageCreator(&CompileResult::PlacementNew_,
@@ -1950,15 +1995,15 @@ const ::google::protobuf::internal::ClassData* CompileResult::GetClassData() con
   return _class_data_.base();
 }
 PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
-const ::_pbi::TcParseTable<1, 2, 0, 39, 2> CompileResult::_table_ = {
+const ::_pbi::TcParseTable<2, 3, 0, 58, 2> CompileResult::_table_ = {
   {
     0,  // no _has_bits_
     0, // no _extensions_
-    2, 8,  // max_field_number, fast_idx_mask
+    3, 24,  // max_field_number, fast_idx_mask
     offsetof(decltype(_table_), field_lookup_table),
-    4294967292,  // skipmap
+    4294967288,  // skipmap
     offsetof(decltype(_table_), field_entries),
-    2,  // num_field_entries
+    3,  // num_field_entries
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     _class_data_.base(),
@@ -1968,26 +2013,34 @@ const ::_pbi::TcParseTable<1, 2, 0, 39, 2> CompileResult::_table_ = {
     ::_pbi::TcParser::GetTable<::WJudger::CompileResult>(),  // to_prefetch
     #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
   }, {{
-    // repeated string testcases = 2;
-    {::_pbi::TcParser::FastUR1,
-     {18, 63, 0, PROTOBUF_FIELD_OFFSET(CompileResult, _impl_.testcases_)}},
+    {::_pbi::TcParser::MiniParse, {}},
     // bool compileError = 1;
     {::_pbi::TcParser::SingularVarintNoZag1<bool, offsetof(CompileResult, _impl_.compileerror_), 63>(),
      {8, 63, 0, PROTOBUF_FIELD_OFFSET(CompileResult, _impl_.compileerror_)}},
+    // string compileErrorMessage = 2;
+    {::_pbi::TcParser::FastUS1,
+     {18, 63, 0, PROTOBUF_FIELD_OFFSET(CompileResult, _impl_.compileerrormessage_)}},
+    // repeated string testcases = 3;
+    {::_pbi::TcParser::FastUR1,
+     {26, 63, 0, PROTOBUF_FIELD_OFFSET(CompileResult, _impl_.testcases_)}},
   }}, {{
     65535, 65535
   }}, {{
     // bool compileError = 1;
     {PROTOBUF_FIELD_OFFSET(CompileResult, _impl_.compileerror_), 0, 0,
     (0 | ::_fl::kFcSingular | ::_fl::kBool)},
-    // repeated string testcases = 2;
+    // string compileErrorMessage = 2;
+    {PROTOBUF_FIELD_OFFSET(CompileResult, _impl_.compileerrormessage_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kUtf8String | ::_fl::kRepAString)},
+    // repeated string testcases = 3;
     {PROTOBUF_FIELD_OFFSET(CompileResult, _impl_.testcases_), 0, 0,
     (0 | ::_fl::kFcRepeated | ::_fl::kUtf8String | ::_fl::kRepSString)},
   }},
   // no aux_entries
   {{
-    "\25\0\11\0\0\0\0\0"
+    "\25\0\23\11\0\0\0\0"
     "WJudger.CompileResult"
+    "compileErrorMessage"
     "testcases"
   }},
 };
@@ -2000,6 +2053,7 @@ PROTOBUF_NOINLINE void CompileResult::Clear() {
   (void) cached_has_bits;
 
   _impl_.testcases_.Clear();
+  _impl_.compileerrormessage_.ClearToEmpty();
   _impl_.compileerror_ = false;
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
 }
@@ -2026,12 +2080,20 @@ PROTOBUF_NOINLINE void CompileResult::Clear() {
                 1, this_._internal_compileerror(), target);
           }
 
-          // repeated string testcases = 2;
+          // string compileErrorMessage = 2;
+          if (!this_._internal_compileerrormessage().empty()) {
+            const std::string& _s = this_._internal_compileerrormessage();
+            ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+                _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "WJudger.CompileResult.compileErrorMessage");
+            target = stream->WriteStringMaybeAliased(2, _s, target);
+          }
+
+          // repeated string testcases = 3;
           for (int i = 0, n = this_._internal_testcases_size(); i < n; ++i) {
             const auto& s = this_._internal_testcases().Get(i);
             ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
                 s.data(), static_cast<int>(s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "WJudger.CompileResult.testcases");
-            target = stream->WriteString(2, s, target);
+            target = stream->WriteString(3, s, target);
           }
 
           if (PROTOBUF_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
@@ -2059,7 +2121,7 @@ PROTOBUF_NOINLINE void CompileResult::Clear() {
 
           ::_pbi::Prefetch5LinesFrom7Lines(&this_);
            {
-            // repeated string testcases = 2;
+            // repeated string testcases = 3;
             {
               total_size +=
                   1 * ::google::protobuf::internal::FromIntSize(this_._internal_testcases().size());
@@ -2070,6 +2132,11 @@ PROTOBUF_NOINLINE void CompileResult::Clear() {
             }
           }
            {
+            // string compileErrorMessage = 2;
+            if (!this_._internal_compileerrormessage().empty()) {
+              total_size += 1 + ::google::protobuf::internal::WireFormatLite::StringSize(
+                                              this_._internal_compileerrormessage());
+            }
             // bool compileError = 1;
             if (this_._internal_compileerror() != 0) {
               total_size += 2;
@@ -2088,6 +2155,9 @@ void CompileResult::MergeImpl(::google::protobuf::MessageLite& to_msg, const ::g
   (void) cached_has_bits;
 
   _this->_internal_mutable_testcases()->MergeFrom(from._internal_testcases());
+  if (!from._internal_compileerrormessage().empty()) {
+    _this->_internal_set_compileerrormessage(from._internal_compileerrormessage());
+  }
   if (from._internal_compileerror() != 0) {
     _this->_impl_.compileerror_ = from._impl_.compileerror_;
   }
@@ -2104,8 +2174,11 @@ void CompileResult::CopyFrom(const CompileResult& from) {
 
 void CompileResult::InternalSwap(CompileResult* PROTOBUF_RESTRICT other) {
   using std::swap;
+  auto* arena = GetArena();
+  ABSL_DCHECK_EQ(arena, other->GetArena());
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   _impl_.testcases_.InternalSwap(&other->_impl_.testcases_);
+  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.compileerrormessage_, &other->_impl_.compileerrormessage_, arena);
         swap(_impl_.compileerror_, other->_impl_.compileerror_);
 }
 
@@ -2132,6 +2205,7 @@ inline PROTOBUF_NDEBUG_INLINE ExecuteResult::Impl_::Impl_(
     const Impl_& from, const ::WJudger::ExecuteResult& from_msg)
       : testcase_(arena, from.testcase_),
         verdict_(arena, from.verdict_),
+        stderr_(arena, from.stderr_),
         msg_(arena, from.msg_),
         _cached_size_{0} {}
 
@@ -2163,6 +2237,7 @@ inline PROTOBUF_NDEBUG_INLINE ExecuteResult::Impl_::Impl_(
     ::google::protobuf::Arena* arena)
       : testcase_(arena),
         verdict_(arena),
+        stderr_(arena),
         msg_(arena),
         _cached_size_{0} {}
 
@@ -2185,6 +2260,7 @@ inline void ExecuteResult::SharedDtor(MessageLite& self) {
   ABSL_DCHECK(this_.GetArena() == nullptr);
   this_._impl_.testcase_.Destroy();
   this_._impl_.verdict_.Destroy();
+  this_._impl_.stderr_.Destroy();
   this_._impl_.msg_.Destroy();
   this_._impl_.~Impl_();
 }
@@ -2225,15 +2301,15 @@ const ::google::protobuf::internal::ClassData* ExecuteResult::GetClassData() con
   return _class_data_.base();
 }
 PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
-const ::_pbi::TcParseTable<3, 6, 0, 48, 2> ExecuteResult::_table_ = {
+const ::_pbi::TcParseTable<3, 7, 0, 54, 2> ExecuteResult::_table_ = {
   {
     0,  // no _has_bits_
     0, // no _extensions_
-    6, 56,  // max_field_number, fast_idx_mask
+    7, 56,  // max_field_number, fast_idx_mask
     offsetof(decltype(_table_), field_lookup_table),
-    4294967232,  // skipmap
+    4294967168,  // skipmap
     offsetof(decltype(_table_), field_entries),
-    6,  // num_field_entries
+    7,  // num_field_entries
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     _class_data_.base(),
@@ -2259,10 +2335,12 @@ const ::_pbi::TcParseTable<3, 6, 0, 48, 2> ExecuteResult::_table_ = {
     // string verdict = 5;
     {::_pbi::TcParser::FastUS1,
      {42, 63, 0, PROTOBUF_FIELD_OFFSET(ExecuteResult, _impl_.verdict_)}},
-    // string msg = 6;
+    // string stderr = 6;
     {::_pbi::TcParser::FastUS1,
-     {50, 63, 0, PROTOBUF_FIELD_OFFSET(ExecuteResult, _impl_.msg_)}},
-    {::_pbi::TcParser::MiniParse, {}},
+     {50, 63, 0, PROTOBUF_FIELD_OFFSET(ExecuteResult, _impl_.stderr_)}},
+    // string msg = 7;
+    {::_pbi::TcParser::FastUS1,
+     {58, 63, 0, PROTOBUF_FIELD_OFFSET(ExecuteResult, _impl_.msg_)}},
   }}, {{
     65535, 65535
   }}, {{
@@ -2281,16 +2359,20 @@ const ::_pbi::TcParseTable<3, 6, 0, 48, 2> ExecuteResult::_table_ = {
     // string verdict = 5;
     {PROTOBUF_FIELD_OFFSET(ExecuteResult, _impl_.verdict_), 0, 0,
     (0 | ::_fl::kFcSingular | ::_fl::kUtf8String | ::_fl::kRepAString)},
-    // string msg = 6;
+    // string stderr = 6;
+    {PROTOBUF_FIELD_OFFSET(ExecuteResult, _impl_.stderr_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kUtf8String | ::_fl::kRepAString)},
+    // string msg = 7;
     {PROTOBUF_FIELD_OFFSET(ExecuteResult, _impl_.msg_), 0, 0,
     (0 | ::_fl::kFcSingular | ::_fl::kUtf8String | ::_fl::kRepAString)},
   }},
   // no aux_entries
   {{
-    "\25\10\0\0\0\7\3\0"
+    "\25\10\0\0\0\7\6\3"
     "WJudger.ExecuteResult"
     "testcase"
     "verdict"
+    "stderr"
     "msg"
   }},
 };
@@ -2304,6 +2386,7 @@ PROTOBUF_NOINLINE void ExecuteResult::Clear() {
 
   _impl_.testcase_.ClearToEmpty();
   _impl_.verdict_.ClearToEmpty();
+  _impl_.stderr_.ClearToEmpty();
   _impl_.msg_.ClearToEmpty();
   ::memset(&_impl_.timeused_, 0, static_cast<::size_t>(
       reinterpret_cast<char*>(&_impl_.score_) -
@@ -2363,12 +2446,20 @@ PROTOBUF_NOINLINE void ExecuteResult::Clear() {
             target = stream->WriteStringMaybeAliased(5, _s, target);
           }
 
-          // string msg = 6;
+          // string stderr = 6;
+          if (!this_._internal_stderr().empty()) {
+            const std::string& _s = this_._internal_stderr();
+            ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+                _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "WJudger.ExecuteResult.stderr");
+            target = stream->WriteStringMaybeAliased(6, _s, target);
+          }
+
+          // string msg = 7;
           if (!this_._internal_msg().empty()) {
             const std::string& _s = this_._internal_msg();
             ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
                 _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "WJudger.ExecuteResult.msg");
-            target = stream->WriteStringMaybeAliased(6, _s, target);
+            target = stream->WriteStringMaybeAliased(7, _s, target);
           }
 
           if (PROTOBUF_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
@@ -2406,7 +2497,12 @@ PROTOBUF_NOINLINE void ExecuteResult::Clear() {
               total_size += 1 + ::google::protobuf::internal::WireFormatLite::StringSize(
                                               this_._internal_verdict());
             }
-            // string msg = 6;
+            // string stderr = 6;
+            if (!this_._internal_stderr().empty()) {
+              total_size += 1 + ::google::protobuf::internal::WireFormatLite::StringSize(
+                                              this_._internal_stderr());
+            }
+            // string msg = 7;
             if (!this_._internal_msg().empty()) {
               total_size += 1 + ::google::protobuf::internal::WireFormatLite::StringSize(
                                               this_._internal_msg());
@@ -2444,6 +2540,9 @@ void ExecuteResult::MergeImpl(::google::protobuf::MessageLite& to_msg, const ::g
   if (!from._internal_verdict().empty()) {
     _this->_internal_set_verdict(from._internal_verdict());
   }
+  if (!from._internal_stderr().empty()) {
+    _this->_internal_set_stderr(from._internal_stderr());
+  }
   if (!from._internal_msg().empty()) {
     _this->_internal_set_msg(from._internal_msg());
   }
@@ -2474,6 +2573,7 @@ void ExecuteResult::InternalSwap(ExecuteResult* PROTOBUF_RESTRICT other) {
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.testcase_, &other->_impl_.testcase_, arena);
   ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.verdict_, &other->_impl_.verdict_, arena);
+  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.stderr_, &other->_impl_.stderr_, arena);
   ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.msg_, &other->_impl_.msg_, arena);
   ::google::protobuf::internal::memswap<
       PROTOBUF_FIELD_OFFSET(ExecuteResult, _impl_.score_)

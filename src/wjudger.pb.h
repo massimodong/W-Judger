@@ -79,8 +79,9 @@ namespace protobuf {
 
 namespace WJudger {
 enum JudgeReply_ResultType : int {
-  JudgeReply_ResultType_COMPILE = 0,
-  JudgeReply_ResultType_EXECUTE = 1,
+  JudgeReply_ResultType_JSTATUS = 0,
+  JudgeReply_ResultType_COMPILE = 1,
+  JudgeReply_ResultType_EXECUTE = 2,
   JudgeReply_ResultType_JudgeReply_ResultType_INT_MIN_SENTINEL_DO_NOT_USE_ =
       std::numeric_limits<::int32_t>::min(),
   JudgeReply_ResultType_JudgeReply_ResultType_INT_MAX_SENTINEL_DO_NOT_USE_ =
@@ -90,8 +91,8 @@ enum JudgeReply_ResultType : int {
 bool JudgeReply_ResultType_IsValid(int value);
 extern const uint32_t JudgeReply_ResultType_internal_data_[];
 constexpr JudgeReply_ResultType JudgeReply_ResultType_ResultType_MIN = static_cast<JudgeReply_ResultType>(0);
-constexpr JudgeReply_ResultType JudgeReply_ResultType_ResultType_MAX = static_cast<JudgeReply_ResultType>(1);
-constexpr int JudgeReply_ResultType_ResultType_ARRAYSIZE = 1 + 1;
+constexpr JudgeReply_ResultType JudgeReply_ResultType_ResultType_MAX = static_cast<JudgeReply_ResultType>(2);
+constexpr int JudgeReply_ResultType_ResultType_ARRAYSIZE = 2 + 1;
 const ::google::protobuf::EnumDescriptor*
 JudgeReply_ResultType_descriptor();
 template <typename T>
@@ -104,7 +105,7 @@ const std::string& JudgeReply_ResultType_Name(T value) {
 template <>
 inline const std::string& JudgeReply_ResultType_Name(JudgeReply_ResultType value) {
   return ::google::protobuf::internal::NameOfDenseEnum<JudgeReply_ResultType_descriptor,
-                                                 0, 1>(
+                                                 0, 2>(
       static_cast<int>(value));
 }
 inline bool JudgeReply_ResultType_Parse(absl::string_view name, JudgeReply_ResultType* value) {
@@ -1139,7 +1140,8 @@ class ExecuteResult final : public ::google::protobuf::Message
   enum : int {
     kTestcaseFieldNumber = 1,
     kVerdictFieldNumber = 5,
-    kMsgFieldNumber = 6,
+    kStderrFieldNumber = 6,
+    kMsgFieldNumber = 7,
     kTimeusedFieldNumber = 2,
     kMemoryusedFieldNumber = 3,
     kScoreFieldNumber = 4,
@@ -1176,7 +1178,23 @@ class ExecuteResult final : public ::google::protobuf::Message
   std::string* _internal_mutable_verdict();
 
   public:
-  // string msg = 6;
+  // string stderr = 6;
+  void clear_stderr() ;
+  const std::string& stderr() const;
+  template <typename Arg_ = const std::string&, typename... Args_>
+  void set_stderr(Arg_&& arg, Args_... args);
+  std::string* mutable_stderr();
+  PROTOBUF_NODISCARD std::string* release_stderr();
+  void set_allocated_stderr(std::string* value);
+
+  private:
+  const std::string& _internal_stderr() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_stderr(
+      const std::string& value);
+  std::string* _internal_mutable_stderr();
+
+  public:
+  // string msg = 7;
   void clear_msg() ;
   const std::string& msg() const;
   template <typename Arg_ = const std::string&, typename... Args_>
@@ -1227,8 +1245,8 @@ class ExecuteResult final : public ::google::protobuf::Message
   class _Internal;
   friend class ::google::protobuf::internal::TcParser;
   static const ::google::protobuf::internal::TcParseTable<
-      3, 6, 0,
-      48, 2>
+      3, 7, 0,
+      54, 2>
       _table_;
 
   friend class ::google::protobuf::MessageLite;
@@ -1247,6 +1265,7 @@ class ExecuteResult final : public ::google::protobuf::Message
                           const ExecuteResult& from_msg);
     ::google::protobuf::internal::ArenaStringPtr testcase_;
     ::google::protobuf::internal::ArenaStringPtr verdict_;
+    ::google::protobuf::internal::ArenaStringPtr stderr_;
     ::google::protobuf::internal::ArenaStringPtr msg_;
     ::uint64_t timeused_;
     double memoryused_;
@@ -1405,10 +1424,11 @@ class CompileResult final : public ::google::protobuf::Message
 
   // accessors -------------------------------------------------------
   enum : int {
-    kTestcasesFieldNumber = 2,
+    kTestcasesFieldNumber = 3,
+    kCompileErrorMessageFieldNumber = 2,
     kCompileErrorFieldNumber = 1,
   };
-  // repeated string testcases = 2;
+  // repeated string testcases = 3;
   int testcases_size() const;
   private:
   int _internal_testcases_size() const;
@@ -1430,6 +1450,22 @@ class CompileResult final : public ::google::protobuf::Message
   ::google::protobuf::RepeatedPtrField<std::string>* _internal_mutable_testcases();
 
   public:
+  // string compileErrorMessage = 2;
+  void clear_compileerrormessage() ;
+  const std::string& compileerrormessage() const;
+  template <typename Arg_ = const std::string&, typename... Args_>
+  void set_compileerrormessage(Arg_&& arg, Args_... args);
+  std::string* mutable_compileerrormessage();
+  PROTOBUF_NODISCARD std::string* release_compileerrormessage();
+  void set_allocated_compileerrormessage(std::string* value);
+
+  private:
+  const std::string& _internal_compileerrormessage() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_compileerrormessage(
+      const std::string& value);
+  std::string* _internal_mutable_compileerrormessage();
+
+  public:
   // bool compileError = 1;
   void clear_compileerror() ;
   bool compileerror() const;
@@ -1445,8 +1481,8 @@ class CompileResult final : public ::google::protobuf::Message
   class _Internal;
   friend class ::google::protobuf::internal::TcParser;
   static const ::google::protobuf::internal::TcParseTable<
-      1, 2, 0,
-      39, 2>
+      2, 3, 0,
+      58, 2>
       _table_;
 
   friend class ::google::protobuf::MessageLite;
@@ -1464,6 +1500,7 @@ class CompileResult final : public ::google::protobuf::Message
                           ::google::protobuf::Arena* arena, const Impl_& from,
                           const CompileResult& from_msg);
     ::google::protobuf::RepeatedPtrField<std::string> testcases_;
+    ::google::protobuf::internal::ArenaStringPtr compileerrormessage_;
     bool compileerror_;
     ::google::protobuf::internal::CachedSize _cached_size_;
     PROTOBUF_TSAN_DECLARE_MEMBER
@@ -1617,6 +1654,7 @@ class JudgeReply final : public ::google::protobuf::Message
   ::google::protobuf::Metadata GetMetadata() const;
   // nested types ----------------------------------------------------
   using ResultType = JudgeReply_ResultType;
+  static constexpr ResultType JSTATUS = JudgeReply_ResultType_JSTATUS;
   static constexpr ResultType COMPILE = JudgeReply_ResultType_COMPILE;
   static constexpr ResultType EXECUTE = JudgeReply_ResultType_EXECUTE;
   static inline bool ResultType_IsValid(int value) {
@@ -1638,11 +1676,12 @@ class JudgeReply final : public ::google::protobuf::Message
 
   // accessors -------------------------------------------------------
   enum : int {
-    kCompileResultFieldNumber = 2,
-    kExecuteResultFieldNumber = 3,
+    kCompileResultFieldNumber = 3,
+    kExecuteResultFieldNumber = 4,
     kResultTypeFieldNumber = 1,
+    kJudgeStatusFieldNumber = 2,
   };
-  // .WJudger.CompileResult compileResult = 2;
+  // .WJudger.CompileResult compileResult = 3;
   bool has_compileresult() const;
   void clear_compileresult() ;
   const ::WJudger::CompileResult& compileresult() const;
@@ -1657,7 +1696,7 @@ class JudgeReply final : public ::google::protobuf::Message
   ::WJudger::CompileResult* _internal_mutable_compileresult();
 
   public:
-  // .WJudger.ExecuteResult executeResult = 3;
+  // .WJudger.ExecuteResult executeResult = 4;
   bool has_executeresult() const;
   void clear_executeresult() ;
   const ::WJudger::ExecuteResult& executeresult() const;
@@ -1682,12 +1721,22 @@ class JudgeReply final : public ::google::protobuf::Message
   void _internal_set_resulttype(::WJudger::JudgeReply_ResultType value);
 
   public:
+  // .WJudger.JudgeStatus judgeStatus = 2;
+  void clear_judgestatus() ;
+  ::WJudger::JudgeStatus judgestatus() const;
+  void set_judgestatus(::WJudger::JudgeStatus value);
+
+  private:
+  ::WJudger::JudgeStatus _internal_judgestatus() const;
+  void _internal_set_judgestatus(::WJudger::JudgeStatus value);
+
+  public:
   // @@protoc_insertion_point(class_scope:WJudger.JudgeReply)
  private:
   class _Internal;
   friend class ::google::protobuf::internal::TcParser;
   static const ::google::protobuf::internal::TcParseTable<
-      2, 3, 2,
+      2, 4, 2,
       0, 2>
       _table_;
 
@@ -1710,6 +1759,7 @@ class JudgeReply final : public ::google::protobuf::Message
     ::WJudger::CompileResult* compileresult_;
     ::WJudger::ExecuteResult* executeresult_;
     int resulttype_;
+    int judgestatus_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -2396,7 +2446,29 @@ inline void JudgeReply::_internal_set_resulttype(::WJudger::JudgeReply_ResultTyp
   _impl_.resulttype_ = value;
 }
 
-// .WJudger.CompileResult compileResult = 2;
+// .WJudger.JudgeStatus judgeStatus = 2;
+inline void JudgeReply::clear_judgestatus() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.judgestatus_ = 0;
+}
+inline ::WJudger::JudgeStatus JudgeReply::judgestatus() const {
+  // @@protoc_insertion_point(field_get:WJudger.JudgeReply.judgeStatus)
+  return _internal_judgestatus();
+}
+inline void JudgeReply::set_judgestatus(::WJudger::JudgeStatus value) {
+  _internal_set_judgestatus(value);
+  // @@protoc_insertion_point(field_set:WJudger.JudgeReply.judgeStatus)
+}
+inline ::WJudger::JudgeStatus JudgeReply::_internal_judgestatus() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return static_cast<::WJudger::JudgeStatus>(_impl_.judgestatus_);
+}
+inline void JudgeReply::_internal_set_judgestatus(::WJudger::JudgeStatus value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.judgestatus_ = value;
+}
+
+// .WJudger.CompileResult compileResult = 3;
 inline bool JudgeReply::has_compileresult() const {
   bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
   PROTOBUF_ASSUME(!value || _impl_.compileresult_ != nullptr);
@@ -2492,7 +2564,7 @@ inline void JudgeReply::set_allocated_compileresult(::WJudger::CompileResult* va
   // @@protoc_insertion_point(field_set_allocated:WJudger.JudgeReply.compileResult)
 }
 
-// .WJudger.ExecuteResult executeResult = 3;
+// .WJudger.ExecuteResult executeResult = 4;
 inline bool JudgeReply::has_executeresult() const {
   bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
   PROTOBUF_ASSUME(!value || _impl_.executeresult_ != nullptr);
@@ -2614,7 +2686,55 @@ inline void CompileResult::_internal_set_compileerror(bool value) {
   _impl_.compileerror_ = value;
 }
 
-// repeated string testcases = 2;
+// string compileErrorMessage = 2;
+inline void CompileResult::clear_compileerrormessage() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.compileerrormessage_.ClearToEmpty();
+}
+inline const std::string& CompileResult::compileerrormessage() const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:WJudger.CompileResult.compileErrorMessage)
+  return _internal_compileerrormessage();
+}
+template <typename Arg_, typename... Args_>
+inline PROTOBUF_ALWAYS_INLINE void CompileResult::set_compileerrormessage(Arg_&& arg,
+                                                     Args_... args) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.compileerrormessage_.Set(static_cast<Arg_&&>(arg), args..., GetArena());
+  // @@protoc_insertion_point(field_set:WJudger.CompileResult.compileErrorMessage)
+}
+inline std::string* CompileResult::mutable_compileerrormessage() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  std::string* _s = _internal_mutable_compileerrormessage();
+  // @@protoc_insertion_point(field_mutable:WJudger.CompileResult.compileErrorMessage)
+  return _s;
+}
+inline const std::string& CompileResult::_internal_compileerrormessage() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.compileerrormessage_.Get();
+}
+inline void CompileResult::_internal_set_compileerrormessage(const std::string& value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.compileerrormessage_.Set(value, GetArena());
+}
+inline std::string* CompileResult::_internal_mutable_compileerrormessage() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  return _impl_.compileerrormessage_.Mutable( GetArena());
+}
+inline std::string* CompileResult::release_compileerrormessage() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  // @@protoc_insertion_point(field_release:WJudger.CompileResult.compileErrorMessage)
+  return _impl_.compileerrormessage_.Release();
+}
+inline void CompileResult::set_allocated_compileerrormessage(std::string* value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.compileerrormessage_.SetAllocated(value, GetArena());
+  if (::google::protobuf::internal::DebugHardenForceCopyDefaultString() && _impl_.compileerrormessage_.IsDefault()) {
+    _impl_.compileerrormessage_.Set("", GetArena());
+  }
+  // @@protoc_insertion_point(field_set_allocated:WJudger.CompileResult.compileErrorMessage)
+}
+
+// repeated string testcases = 3;
 inline int CompileResult::_internal_testcases_size() const {
   return _internal_testcases().size();
 }
@@ -2844,7 +2964,55 @@ inline void ExecuteResult::set_allocated_verdict(std::string* value) {
   // @@protoc_insertion_point(field_set_allocated:WJudger.ExecuteResult.verdict)
 }
 
-// string msg = 6;
+// string stderr = 6;
+inline void ExecuteResult::clear_stderr() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.stderr_.ClearToEmpty();
+}
+inline const std::string& ExecuteResult::stderr() const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:WJudger.ExecuteResult.stderr)
+  return _internal_stderr();
+}
+template <typename Arg_, typename... Args_>
+inline PROTOBUF_ALWAYS_INLINE void ExecuteResult::set_stderr(Arg_&& arg,
+                                                     Args_... args) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.stderr_.Set(static_cast<Arg_&&>(arg), args..., GetArena());
+  // @@protoc_insertion_point(field_set:WJudger.ExecuteResult.stderr)
+}
+inline std::string* ExecuteResult::mutable_stderr() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  std::string* _s = _internal_mutable_stderr();
+  // @@protoc_insertion_point(field_mutable:WJudger.ExecuteResult.stderr)
+  return _s;
+}
+inline const std::string& ExecuteResult::_internal_stderr() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.stderr_.Get();
+}
+inline void ExecuteResult::_internal_set_stderr(const std::string& value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.stderr_.Set(value, GetArena());
+}
+inline std::string* ExecuteResult::_internal_mutable_stderr() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  return _impl_.stderr_.Mutable( GetArena());
+}
+inline std::string* ExecuteResult::release_stderr() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  // @@protoc_insertion_point(field_release:WJudger.ExecuteResult.stderr)
+  return _impl_.stderr_.Release();
+}
+inline void ExecuteResult::set_allocated_stderr(std::string* value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.stderr_.SetAllocated(value, GetArena());
+  if (::google::protobuf::internal::DebugHardenForceCopyDefaultString() && _impl_.stderr_.IsDefault()) {
+    _impl_.stderr_.Set("", GetArena());
+  }
+  // @@protoc_insertion_point(field_set_allocated:WJudger.ExecuteResult.stderr)
+}
+
+// string msg = 7;
 inline void ExecuteResult::clear_msg() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.msg_.ClearToEmpty();

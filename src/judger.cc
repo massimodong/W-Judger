@@ -19,6 +19,25 @@
 
 #include "judger.h"
 
+static std::string getFdContent(int fd, size_t length = 4096){
+  std::string ret;
+  char buffer[OJ_SMALL_BUFFER_SIZE + 1];
+  lseek(fd, 0, SEEK_SET);
+  while(ret.length() < length){
+    ssize_t count = read(fd, buffer, std::min(length, sizeof(buffer) - 1));
+    if(count == -1){
+      LOG(FATAL)<<"Error reading from file";
+    }else if(count == 0){
+      break;
+    }else{
+      buffer[count] = '\0';
+      ret += buffer;
+    }
+  }
+  return ret;
+}
+
+
 Judger::Judger(const libconfig::Setting &setting):
   sandbox(std::make_unique<Sandbox>()),
   token(std::string(setting["token"])),
@@ -48,11 +67,21 @@ void Judger::finish_working(){
 }
 
 void Judger::judge(const JudgeTask &task){
+  task.set_status(STATUS_OK);
+  if(!task.check_token(token)){
+    return;
+  }
+
+  if(!start_working()){
+    task.set_status(STATUS_BUSY);
+    return;
+  }
   sandbox->ready();
   
   int fd_ce = sandbox->open_ram_file();
-  int id = sandbox->compile(task.language(), task.code(), fd_ce);
-  if(id == -1){
+  int exe_id = sandbox->compile(task.language(), task.code(), fd_ce);
+
+  if(exe_id == -1){
     LOG(INFO)<<"ce";
     //TODO: report CE
   }else{
@@ -71,25 +100,9 @@ void Judger::judge(const JudgeTask &task){
   dpause();
   
   sandbox->clean();
+  finish_working();
 }
 
-static std::string getFdContent(int fd, size_t length = 4096){
-  std::string ret;
-  char buffer[OJ_SMALL_BUFFER_SIZE + 1];
-  lseek(fd, 0, SEEK_SET);
-  while(ret.length() < length){
-    ssize_t count = read(fd, buffer, std::min(length, sizeof(buffer) - 1));
-    if(count == -1){
-      LOG(FATAL)<<"Error reading from file";
-    }else if(count == 0){
-      break;
-    }else{
-      buffer[count] = '\0';
-      ret += buffer;
-    }
-  }
-  return ret;
-}
 
 void Judger::simple(const SimpleTask &task){
   task.set_status(STATUS_OK);
