@@ -36,6 +36,10 @@ class GrpcTask final: public JudgeTask{
     return args->code();
   }
 
+  std::string datapath() const override{
+    return args->datapath();
+  }
+
   void set_compileerror(std::string err) const override{
     JudgeReply reply;
     reply.set_resulttype(JudgeReply_ResultType_COMPILE);

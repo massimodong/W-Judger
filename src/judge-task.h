@@ -25,8 +25,11 @@
 class JudgeTask
 {
   public:
+    virtual ~JudgeTask() = default;
+
     virtual int language() const = 0;
     virtual std::string code() const = 0;
+    virtual std::string datapath() const = 0;
 
     virtual void set_compileerror(std::string) const = 0;
 
@@ -41,6 +44,8 @@ class JudgeTask
 
 class SimpleTask{
   public:
+    virtual ~SimpleTask() = default;
+
     virtual int language() const = 0;
     virtual std::string code() const = 0;
     virtual std::string input() const = 0;

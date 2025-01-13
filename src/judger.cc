@@ -19,6 +19,8 @@
 
 #include "judger.h"
 
+#include <algorithm>
+
 static std::string getFdContent(int fd, size_t length = 4096){
   std::string ret;
   char buffer[OJ_SMALL_BUFFER_SIZE + 1];
@@ -41,7 +43,8 @@ static std::string getFdContent(int fd, size_t length = 4096){
 Judger::Judger(const libconfig::Setting &setting):
   sandbox(std::make_unique<Sandbox>()),
   token(std::string(setting["token"])),
-  address(std::string(setting["address"])){
+  address(std::string(setting["address"])),
+  dataroot(std::string(setting["dataroot"])){
 
     std::lock_guard<std::mutex> lk(mutex);
     is_working = false;
@@ -66,6 +69,15 @@ void Judger::finish_working(){
     is_working = false;
 }
 
+static std::vector<fs::directory_entry> get_testcases(std::string path){
+  std::vector<fs::directory_entry> ret;
+  for(const auto& entry: fs::directory_iterator(path)){
+    if(entry.path().extension() == "in") ret.push_back(entry);
+  }
+  std::sort(ret.begin(), ret.end());
+  return ret;
+}
+
 void Judger::judge(const JudgeTask &task){
   task.set_status(STATUS_OK);
   if(!task.check_token(token)){
@@ -83,9 +95,9 @@ void Judger::judge(const JudgeTask &task){
 
   if(exe_id == -1){
     LOG(INFO)<<"ce";
-    //TODO: report CE
+    task.set_compileerror(getFdContent(fd_ce));
   }else{
-    //TODO: read testcases
+    auto testcases = get_testcases(dataroot + "/" + task.datapath());
     //TODO: report compile success
     //TODO: read from config file the judging procedure
   

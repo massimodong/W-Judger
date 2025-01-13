@@ -47,6 +47,7 @@ protected:
 
 private:
   std::string token;
+  std::string dataroot;
 
   std::unique_ptr<Sandbox> sandbox;
 

@@ -39,6 +39,9 @@
 #include <mutex>
 #include <condition_variable>
 
+#include <filesystem>
+namespace fs = std::filesystem;
+
 extern bool OJ_SHUTDOWN;
 void oj_wait_shutdown();
 
