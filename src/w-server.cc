@@ -136,12 +136,13 @@ class WJudgerImpl final : public WJudger::WJudger::Service {
 };
 
 void WServer::Run(std::unique_ptr<Judger> judger){
-  std::string address("[::]:9717");
+  std::string address = judger->address;
   WJudgerImpl impl;
   impl.setJudger(std::move(judger));
 
   ServerBuilder builder;
 
+  LOG(INFO)<<"Listening on " << address;
   builder.AddListeningPort(address, InsecureServerCredentials());
   builder.RegisterService(&impl);
 

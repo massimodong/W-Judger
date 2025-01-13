@@ -39,12 +39,15 @@ public:
   Judger &operator =(const Judger &) = delete;
   ~Judger();
 
+  std::string address;
+
   void judge(const JudgeTask &);
   void simple(const SimpleTask &);
 protected:
 
 private:
   std::string token;
+
   std::unique_ptr<Sandbox> sandbox;
 
   std::unique_ptr<std::mutex> mutex;

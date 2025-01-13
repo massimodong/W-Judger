@@ -22,7 +22,8 @@
 Judger::Judger(const libconfig::Setting &setting):
   sandbox(std::make_unique<Sandbox>()),
   mutex(std::make_unique<std::mutex>()),
-  token(std::string(setting["token"])){
+  token(std::string(setting["token"])),
+  address(std::string(setting["address"])){
 }
 
 Judger::~Judger(){
