@@ -625,13 +625,12 @@ class SimpleArgs final : public ::google::protobuf::Message
 
   // accessors -------------------------------------------------------
   enum : int {
-    kTokenFieldNumber = 2,
-    kCodeFieldNumber = 3,
-    kInputFieldNumber = 5,
-    kJudgeridFieldNumber = 1,
-    kLanguageFieldNumber = 4,
+    kTokenFieldNumber = 1,
+    kCodeFieldNumber = 2,
+    kInputFieldNumber = 4,
+    kLanguageFieldNumber = 3,
   };
-  // string token = 2;
+  // string token = 1;
   void clear_token() ;
   const std::string& token() const;
   template <typename Arg_ = const std::string&, typename... Args_>
@@ -647,7 +646,7 @@ class SimpleArgs final : public ::google::protobuf::Message
   std::string* _internal_mutable_token();
 
   public:
-  // string code = 3;
+  // string code = 2;
   void clear_code() ;
   const std::string& code() const;
   template <typename Arg_ = const std::string&, typename... Args_>
@@ -663,7 +662,7 @@ class SimpleArgs final : public ::google::protobuf::Message
   std::string* _internal_mutable_code();
 
   public:
-  // string input = 5;
+  // string input = 4;
   void clear_input() ;
   const std::string& input() const;
   template <typename Arg_ = const std::string&, typename... Args_>
@@ -679,17 +678,7 @@ class SimpleArgs final : public ::google::protobuf::Message
   std::string* _internal_mutable_input();
 
   public:
-  // uint32 judgerid = 1;
-  void clear_judgerid() ;
-  ::uint32_t judgerid() const;
-  void set_judgerid(::uint32_t value);
-
-  private:
-  ::uint32_t _internal_judgerid() const;
-  void _internal_set_judgerid(::uint32_t value);
-
-  public:
-  // .WJudger.Language language = 4;
+  // .WJudger.Language language = 3;
   void clear_language() ;
   ::WJudger::Language language() const;
   void set_language(::WJudger::Language value);
@@ -704,7 +693,7 @@ class SimpleArgs final : public ::google::protobuf::Message
   class _Internal;
   friend class ::google::protobuf::internal::TcParser;
   static const ::google::protobuf::internal::TcParseTable<
-      3, 5, 0,
+      2, 4, 0,
       41, 2>
       _table_;
 
@@ -725,7 +714,6 @@ class SimpleArgs final : public ::google::protobuf::Message
     ::google::protobuf::internal::ArenaStringPtr token_;
     ::google::protobuf::internal::ArenaStringPtr code_;
     ::google::protobuf::internal::ArenaStringPtr input_;
-    ::uint32_t judgerid_;
     int language_;
     ::google::protobuf::internal::CachedSize _cached_size_;
     PROTOBUF_TSAN_DECLARE_MEMBER
@@ -881,13 +869,30 @@ class JudgeArgs final : public ::google::protobuf::Message
 
   // accessors -------------------------------------------------------
   enum : int {
-    kCodeFieldNumber = 1,
-    kTimelimitFieldNumber = 3,
-    kLanguageFieldNumber = 2,
-    kDataIdFieldNumber = 5,
-    kMemorylimitFieldNumber = 4,
+    kTokenFieldNumber = 1,
+    kCodeFieldNumber = 2,
+    kDatapathFieldNumber = 6,
+    kTimelimitFieldNumber = 4,
+    kMemorylimitFieldNumber = 5,
+    kLanguageFieldNumber = 3,
   };
-  // string code = 1;
+  // string token = 1;
+  void clear_token() ;
+  const std::string& token() const;
+  template <typename Arg_ = const std::string&, typename... Args_>
+  void set_token(Arg_&& arg, Args_... args);
+  std::string* mutable_token();
+  PROTOBUF_NODISCARD std::string* release_token();
+  void set_allocated_token(std::string* value);
+
+  private:
+  const std::string& _internal_token() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_token(
+      const std::string& value);
+  std::string* _internal_mutable_token();
+
+  public:
+  // string code = 2;
   void clear_code() ;
   const std::string& code() const;
   template <typename Arg_ = const std::string&, typename... Args_>
@@ -903,7 +908,23 @@ class JudgeArgs final : public ::google::protobuf::Message
   std::string* _internal_mutable_code();
 
   public:
-  // uint64 timelimit = 3;
+  // string datapath = 6;
+  void clear_datapath() ;
+  const std::string& datapath() const;
+  template <typename Arg_ = const std::string&, typename... Args_>
+  void set_datapath(Arg_&& arg, Args_... args);
+  std::string* mutable_datapath();
+  PROTOBUF_NODISCARD std::string* release_datapath();
+  void set_allocated_datapath(std::string* value);
+
+  private:
+  const std::string& _internal_datapath() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_datapath(
+      const std::string& value);
+  std::string* _internal_mutable_datapath();
+
+  public:
+  // uint64 timelimit = 4;
   void clear_timelimit() ;
   ::uint64_t timelimit() const;
   void set_timelimit(::uint64_t value);
@@ -913,27 +934,7 @@ class JudgeArgs final : public ::google::protobuf::Message
   void _internal_set_timelimit(::uint64_t value);
 
   public:
-  // .WJudger.Language language = 2;
-  void clear_language() ;
-  ::WJudger::Language language() const;
-  void set_language(::WJudger::Language value);
-
-  private:
-  ::WJudger::Language _internal_language() const;
-  void _internal_set_language(::WJudger::Language value);
-
-  public:
-  // uint32 dataId = 5;
-  void clear_dataid() ;
-  ::uint32_t dataid() const;
-  void set_dataid(::uint32_t value);
-
-  private:
-  ::uint32_t _internal_dataid() const;
-  void _internal_set_dataid(::uint32_t value);
-
-  public:
-  // double memorylimit = 4;
+  // double memorylimit = 5;
   void clear_memorylimit() ;
   double memorylimit() const;
   void set_memorylimit(double value);
@@ -943,13 +944,23 @@ class JudgeArgs final : public ::google::protobuf::Message
   void _internal_set_memorylimit(double value);
 
   public:
+  // .WJudger.Language language = 3;
+  void clear_language() ;
+  ::WJudger::Language language() const;
+  void set_language(::WJudger::Language value);
+
+  private:
+  ::WJudger::Language _internal_language() const;
+  void _internal_set_language(::WJudger::Language value);
+
+  public:
   // @@protoc_insertion_point(class_scope:WJudger.JudgeArgs)
  private:
   class _Internal;
   friend class ::google::protobuf::internal::TcParser;
   static const ::google::protobuf::internal::TcParseTable<
-      3, 5, 0,
-      30, 2>
+      3, 6, 0,
+      43, 2>
       _table_;
 
   friend class ::google::protobuf::MessageLite;
@@ -966,11 +977,12 @@ class JudgeArgs final : public ::google::protobuf::Message
     inline explicit Impl_(::google::protobuf::internal::InternalVisibility visibility,
                           ::google::protobuf::Arena* arena, const Impl_& from,
                           const JudgeArgs& from_msg);
+    ::google::protobuf::internal::ArenaStringPtr token_;
     ::google::protobuf::internal::ArenaStringPtr code_;
+    ::google::protobuf::internal::ArenaStringPtr datapath_;
     ::uint64_t timelimit_;
-    int language_;
-    ::uint32_t dataid_;
     double memorylimit_;
+    int language_;
     ::google::protobuf::internal::CachedSize _cached_size_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
@@ -1394,7 +1406,7 @@ class CompileResult final : public ::google::protobuf::Message
   // accessors -------------------------------------------------------
   enum : int {
     kTestcasesFieldNumber = 2,
-    kCompileErorFieldNumber = 1,
+    kCompileErrorFieldNumber = 1,
   };
   // repeated string testcases = 2;
   int testcases_size() const;
@@ -1418,14 +1430,14 @@ class CompileResult final : public ::google::protobuf::Message
   ::google::protobuf::RepeatedPtrField<std::string>* _internal_mutable_testcases();
 
   public:
-  // bool compileEror = 1;
-  void clear_compileeror() ;
-  bool compileeror() const;
-  void set_compileeror(bool value);
+  // bool compileError = 1;
+  void clear_compileerror() ;
+  bool compileerror() const;
+  void set_compileerror(bool value);
 
   private:
-  bool _internal_compileeror() const;
-  void _internal_set_compileeror(bool value);
+  bool _internal_compileerror() const;
+  void _internal_set_compileerror(bool value);
 
   public:
   // @@protoc_insertion_point(class_scope:WJudger.CompileResult)
@@ -1452,7 +1464,7 @@ class CompileResult final : public ::google::protobuf::Message
                           ::google::protobuf::Arena* arena, const Impl_& from,
                           const CompileResult& from_msg);
     ::google::protobuf::RepeatedPtrField<std::string> testcases_;
-    bool compileeror_;
+    bool compileerror_;
     ::google::protobuf::internal::CachedSize _cached_size_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
@@ -1720,29 +1732,7 @@ class JudgeReply final : public ::google::protobuf::Message
 
 // SimpleArgs
 
-// uint32 judgerid = 1;
-inline void SimpleArgs::clear_judgerid() {
-  ::google::protobuf::internal::TSanWrite(&_impl_);
-  _impl_.judgerid_ = 0u;
-}
-inline ::uint32_t SimpleArgs::judgerid() const {
-  // @@protoc_insertion_point(field_get:WJudger.SimpleArgs.judgerid)
-  return _internal_judgerid();
-}
-inline void SimpleArgs::set_judgerid(::uint32_t value) {
-  _internal_set_judgerid(value);
-  // @@protoc_insertion_point(field_set:WJudger.SimpleArgs.judgerid)
-}
-inline ::uint32_t SimpleArgs::_internal_judgerid() const {
-  ::google::protobuf::internal::TSanRead(&_impl_);
-  return _impl_.judgerid_;
-}
-inline void SimpleArgs::_internal_set_judgerid(::uint32_t value) {
-  ::google::protobuf::internal::TSanWrite(&_impl_);
-  _impl_.judgerid_ = value;
-}
-
-// string token = 2;
+// string token = 1;
 inline void SimpleArgs::clear_token() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.token_.ClearToEmpty();
@@ -1790,7 +1780,7 @@ inline void SimpleArgs::set_allocated_token(std::string* value) {
   // @@protoc_insertion_point(field_set_allocated:WJudger.SimpleArgs.token)
 }
 
-// string code = 3;
+// string code = 2;
 inline void SimpleArgs::clear_code() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.code_.ClearToEmpty();
@@ -1838,7 +1828,7 @@ inline void SimpleArgs::set_allocated_code(std::string* value) {
   // @@protoc_insertion_point(field_set_allocated:WJudger.SimpleArgs.code)
 }
 
-// .WJudger.Language language = 4;
+// .WJudger.Language language = 3;
 inline void SimpleArgs::clear_language() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.language_ = 0;
@@ -1860,7 +1850,7 @@ inline void SimpleArgs::_internal_set_language(::WJudger::Language value) {
   _impl_.language_ = value;
 }
 
-// string input = 5;
+// string input = 4;
 inline void SimpleArgs::clear_input() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.input_.ClearToEmpty();
@@ -2170,7 +2160,55 @@ inline void SimpleReply::set_allocated_output(std::string* value) {
 
 // JudgeArgs
 
-// string code = 1;
+// string token = 1;
+inline void JudgeArgs::clear_token() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.token_.ClearToEmpty();
+}
+inline const std::string& JudgeArgs::token() const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:WJudger.JudgeArgs.token)
+  return _internal_token();
+}
+template <typename Arg_, typename... Args_>
+inline PROTOBUF_ALWAYS_INLINE void JudgeArgs::set_token(Arg_&& arg,
+                                                     Args_... args) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.token_.Set(static_cast<Arg_&&>(arg), args..., GetArena());
+  // @@protoc_insertion_point(field_set:WJudger.JudgeArgs.token)
+}
+inline std::string* JudgeArgs::mutable_token() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  std::string* _s = _internal_mutable_token();
+  // @@protoc_insertion_point(field_mutable:WJudger.JudgeArgs.token)
+  return _s;
+}
+inline const std::string& JudgeArgs::_internal_token() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.token_.Get();
+}
+inline void JudgeArgs::_internal_set_token(const std::string& value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.token_.Set(value, GetArena());
+}
+inline std::string* JudgeArgs::_internal_mutable_token() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  return _impl_.token_.Mutable( GetArena());
+}
+inline std::string* JudgeArgs::release_token() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  // @@protoc_insertion_point(field_release:WJudger.JudgeArgs.token)
+  return _impl_.token_.Release();
+}
+inline void JudgeArgs::set_allocated_token(std::string* value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.token_.SetAllocated(value, GetArena());
+  if (::google::protobuf::internal::DebugHardenForceCopyDefaultString() && _impl_.token_.IsDefault()) {
+    _impl_.token_.Set("", GetArena());
+  }
+  // @@protoc_insertion_point(field_set_allocated:WJudger.JudgeArgs.token)
+}
+
+// string code = 2;
 inline void JudgeArgs::clear_code() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.code_.ClearToEmpty();
@@ -2218,7 +2256,7 @@ inline void JudgeArgs::set_allocated_code(std::string* value) {
   // @@protoc_insertion_point(field_set_allocated:WJudger.JudgeArgs.code)
 }
 
-// .WJudger.Language language = 2;
+// .WJudger.Language language = 3;
 inline void JudgeArgs::clear_language() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.language_ = 0;
@@ -2240,7 +2278,7 @@ inline void JudgeArgs::_internal_set_language(::WJudger::Language value) {
   _impl_.language_ = value;
 }
 
-// uint64 timelimit = 3;
+// uint64 timelimit = 4;
 inline void JudgeArgs::clear_timelimit() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.timelimit_ = ::uint64_t{0u};
@@ -2262,7 +2300,7 @@ inline void JudgeArgs::_internal_set_timelimit(::uint64_t value) {
   _impl_.timelimit_ = value;
 }
 
-// double memorylimit = 4;
+// double memorylimit = 5;
 inline void JudgeArgs::clear_memorylimit() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.memorylimit_ = 0;
@@ -2284,26 +2322,52 @@ inline void JudgeArgs::_internal_set_memorylimit(double value) {
   _impl_.memorylimit_ = value;
 }
 
-// uint32 dataId = 5;
-inline void JudgeArgs::clear_dataid() {
+// string datapath = 6;
+inline void JudgeArgs::clear_datapath() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
-  _impl_.dataid_ = 0u;
+  _impl_.datapath_.ClearToEmpty();
 }
-inline ::uint32_t JudgeArgs::dataid() const {
-  // @@protoc_insertion_point(field_get:WJudger.JudgeArgs.dataId)
-  return _internal_dataid();
+inline const std::string& JudgeArgs::datapath() const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:WJudger.JudgeArgs.datapath)
+  return _internal_datapath();
 }
-inline void JudgeArgs::set_dataid(::uint32_t value) {
-  _internal_set_dataid(value);
-  // @@protoc_insertion_point(field_set:WJudger.JudgeArgs.dataId)
+template <typename Arg_, typename... Args_>
+inline PROTOBUF_ALWAYS_INLINE void JudgeArgs::set_datapath(Arg_&& arg,
+                                                     Args_... args) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.datapath_.Set(static_cast<Arg_&&>(arg), args..., GetArena());
+  // @@protoc_insertion_point(field_set:WJudger.JudgeArgs.datapath)
 }
-inline ::uint32_t JudgeArgs::_internal_dataid() const {
+inline std::string* JudgeArgs::mutable_datapath() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  std::string* _s = _internal_mutable_datapath();
+  // @@protoc_insertion_point(field_mutable:WJudger.JudgeArgs.datapath)
+  return _s;
+}
+inline const std::string& JudgeArgs::_internal_datapath() const {
   ::google::protobuf::internal::TSanRead(&_impl_);
-  return _impl_.dataid_;
+  return _impl_.datapath_.Get();
 }
-inline void JudgeArgs::_internal_set_dataid(::uint32_t value) {
+inline void JudgeArgs::_internal_set_datapath(const std::string& value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
-  _impl_.dataid_ = value;
+  _impl_.datapath_.Set(value, GetArena());
+}
+inline std::string* JudgeArgs::_internal_mutable_datapath() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  return _impl_.datapath_.Mutable( GetArena());
+}
+inline std::string* JudgeArgs::release_datapath() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  // @@protoc_insertion_point(field_release:WJudger.JudgeArgs.datapath)
+  return _impl_.datapath_.Release();
+}
+inline void JudgeArgs::set_allocated_datapath(std::string* value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.datapath_.SetAllocated(value, GetArena());
+  if (::google::protobuf::internal::DebugHardenForceCopyDefaultString() && _impl_.datapath_.IsDefault()) {
+    _impl_.datapath_.Set("", GetArena());
+  }
+  // @@protoc_insertion_point(field_set_allocated:WJudger.JudgeArgs.datapath)
 }
 
 // -------------------------------------------------------------------
@@ -2528,26 +2592,26 @@ inline void JudgeReply::set_allocated_executeresult(::WJudger::ExecuteResult* va
 
 // CompileResult
 
-// bool compileEror = 1;
-inline void CompileResult::clear_compileeror() {
+// bool compileError = 1;
+inline void CompileResult::clear_compileerror() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
-  _impl_.compileeror_ = false;
+  _impl_.compileerror_ = false;
 }
-inline bool CompileResult::compileeror() const {
-  // @@protoc_insertion_point(field_get:WJudger.CompileResult.compileEror)
-  return _internal_compileeror();
+inline bool CompileResult::compileerror() const {
+  // @@protoc_insertion_point(field_get:WJudger.CompileResult.compileError)
+  return _internal_compileerror();
 }
-inline void CompileResult::set_compileeror(bool value) {
-  _internal_set_compileeror(value);
-  // @@protoc_insertion_point(field_set:WJudger.CompileResult.compileEror)
+inline void CompileResult::set_compileerror(bool value) {
+  _internal_set_compileerror(value);
+  // @@protoc_insertion_point(field_set:WJudger.CompileResult.compileError)
 }
-inline bool CompileResult::_internal_compileeror() const {
+inline bool CompileResult::_internal_compileerror() const {
   ::google::protobuf::internal::TSanRead(&_impl_);
-  return _impl_.compileeror_;
+  return _impl_.compileerror_;
 }
-inline void CompileResult::_internal_set_compileeror(bool value) {
+inline void CompileResult::_internal_set_compileerror(bool value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
-  _impl_.compileeror_ = value;
+  _impl_.compileerror_ = value;
 }
 
 // repeated string testcases = 2;
