@@ -26,7 +26,7 @@ Judger::Judger(const libconfig::Setting &setting):
 }
 
 Judger::~Judger(){
-	LOG(INFO)<<"destroying judger";
+  LOG(INFO)<<"destroying judger";
 }
 
 void Judger::judge(const JudgeTask &task){
@@ -35,19 +35,19 @@ void Judger::judge(const JudgeTask &task){
   int fd_ce = sandbox->open_ram_file();
   int id = sandbox->compile(task.language(), task.code(), fd_ce);
   if(id == -1){
-  	LOG(INFO)<<"ce";
-  	//TODO: report CE
+    LOG(INFO)<<"ce";
+    //TODO: report CE
   }else{
-  	//TODO: read testcases
-  	//TODO: report compile success
-  	//TODO: read from config file the judging procedure
+    //TODO: read testcases
+    //TODO: report compile success
+    //TODO: read from config file the judging procedure
   
-  	int fd_out = sandbox->open_file("user.out");
-  	//TODO: something like
-  	// usage = sandbox->execute_program(id, mappings)
-  	// where `id` is returned from compile
-  	// and `mappings` is std::vector<std::pair<int, int>> where we redirect `first` to `second` using dup2(2) (here, 1 -> fd_out)
-  	// and `usage` contains time and memory usage of this program
+    int fd_out = sandbox->open_file("user.out");
+    //TODO: something like
+    // usage = sandbox->execute_program(id, mappings)
+    // where `id` is returned from compile
+    // and `mappings` is std::vector<std::pair<int, int>> where we redirect `first` to `second` using dup2(2) (here, 1 -> fd_out)
+    // and `usage` contains time and memory usage of this program
   }
   
   dpause();
@@ -56,28 +56,28 @@ void Judger::judge(const JudgeTask &task){
 }
 
 static std::string getFdContent(int fd, size_t length = 4096){
-	std::string ret;
-	char buffer[OJ_SMALL_BUFFER_SIZE + 1];
-	lseek(fd, 0, SEEK_SET);
-	while(ret.length() < length){
-		ssize_t count = read(fd, buffer, std::min(length, sizeof(buffer) - 1));
-		if(count == -1){
-			LOG(FATAL)<<"Error reading from file";
-		}else if(count == 0){
-			break;
-		}else{
-			buffer[count] = '\0';
-			ret += buffer;
-		}
-	}
-	return ret;
+  std::string ret;
+  char buffer[OJ_SMALL_BUFFER_SIZE + 1];
+  lseek(fd, 0, SEEK_SET);
+  while(ret.length() < length){
+    ssize_t count = read(fd, buffer, std::min(length, sizeof(buffer) - 1));
+    if(count == -1){
+      LOG(FATAL)<<"Error reading from file";
+    }else if(count == 0){
+      break;
+    }else{
+      buffer[count] = '\0';
+      ret += buffer;
+    }
+  }
+  return ret;
 }
 
 void Judger::simple(const SimpleTask &task){
-	task.set_status(STATUS_OK);
-	if(!task.check_token(token)){
-		return;
-	}
+  task.set_status(STATUS_OK);
+  if(!task.check_token(token)){
+    return;
+  }
   sandbox->ready();
   dpause();
 
@@ -85,28 +85,28 @@ void Judger::simple(const SimpleTask &task){
   int exe_id = sandbox->compile(task.language(), task.code(), fd_ce);
 
   if(exe_id == -1){
-  	LOG(INFO)<<"ce";
-  	task.set_compileerror(getFdContent(fd_ce));
+    LOG(INFO)<<"ce";
+    task.set_compileerror(getFdContent(fd_ce));
   }else{
-  	writeFile("user.in", task.input()); //TODO: this can be a ramfile too
-  	int fd_in = sandbox->open_file("user.in");
-  	int fd_out = sandbox->open_ram_file();
-  	int fd_err = sandbox->open_ram_file();
-  	dpause();
-  	std::vector<std::pair<int, int>> mappings;
-  	mappings.push_back(std::make_pair(0, fd_in));
-  	mappings.push_back(std::make_pair(1, fd_out));
-  	mappings.push_back(std::make_pair(2, fd_err));
-  	auto data = sandbox->execute_program(exe_id, mappings);
-  	LOG(INFO)<<"RE: "<<data.re();
-  	LOG(INFO)<<"time: "<<data.time_used;
-  	LOG(INFO)<<"memory: "<<data.memory_used;
-  	dpause();
+    writeFile("user.in", task.input()); //TODO: this can be a ramfile too
+    int fd_in = sandbox->open_file("user.in");
+    int fd_out = sandbox->open_ram_file();
+    int fd_err = sandbox->open_ram_file();
+    dpause();
+    std::vector<std::pair<int, int>> mappings;
+    mappings.push_back(std::make_pair(0, fd_in));
+    mappings.push_back(std::make_pair(1, fd_out));
+    mappings.push_back(std::make_pair(2, fd_err));
+    auto data = sandbox->execute_program(exe_id, mappings);
+    LOG(INFO)<<"RE: "<<data.re();
+    LOG(INFO)<<"time: "<<data.time_used;
+    LOG(INFO)<<"memory: "<<data.memory_used;
+    dpause();
   
-  	if(data.re()) task.set_runtimeerror(getFdContent(fd_err));
-  	task.set_timeused(data.time_used);
-  	task.set_memoryused(data.memory_used);
-  	task.set_output(getFdContent(fd_out));
+    if(data.re()) task.set_runtimeerror(getFdContent(fd_err));
+    task.set_timeused(data.time_used);
+    task.set_memoryused(data.memory_used);
+    task.set_output(getFdContent(fd_out));
   }
   sandbox->clean();
 }

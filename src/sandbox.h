@@ -23,38 +23,38 @@
 #include "common.h"
 
 class ExecuteData{
-	public:
-	bool ifexited;
-	bool ifsignaled;
-	int status;
-	int signal;
-	long long time_used;
-	long long memory_used;
-	bool re() const{
-		if(ifexited && status == 0) return false;
-		else return true;
-	};
+  public:
+  bool ifexited;
+  bool ifsignaled;
+  int status;
+  int signal;
+  long long time_used;
+  long long memory_used;
+  bool re() const{
+    if(ifexited && status == 0) return false;
+    else return true;
+  };
 };
 
 class Sandbox
 {
 public:
-	Sandbox();
-	~Sandbox();
+  Sandbox();
+  ~Sandbox();
 
-	void ready();
-	void clean();
-	int compile(int language, std::string code, int);
-	int open_file(const char *filename = NULL);
-	int open_ram_file();
-	ExecuteData execute_program(int, std::vector<std::pair<int, int>>);
+  void ready();
+  void clean();
+  int compile(int language, std::string code, int);
+  int open_file(const char *filename = NULL);
+  int open_ram_file();
+  ExecuteData execute_program(int, std::vector<std::pair<int, int>>);
 protected:
 
 private:
-	std::vector<std::string> executable_files;
-	std::vector<std::pair<int, std::string>> normal_files;
-	std::vector<int> ram_files;
-	int raw_compile(int language, int fd_ce);
+  std::vector<std::string> executable_files;
+  std::vector<std::pair<int, std::string>> normal_files;
+  std::vector<int> ram_files;
+  int raw_compile(int language, int fd_ce);
 };
 
 #endif // _SANDBOX_H_

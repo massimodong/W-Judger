@@ -30,8 +30,8 @@ std::condition_variable SHUTDOWN_CV;
 std::mutex SHUTDOWN_MUTEX;
 
 void oj_wait_shutdown(){
-	std::unique_lock<std::mutex> lk(SHUTDOWN_MUTEX);
-	SHUTDOWN_CV.wait(lk, []{return OJ_SHUTDOWN;});
+  std::unique_lock<std::mutex> lk(SHUTDOWN_MUTEX);
+  SHUTDOWN_CV.wait(lk, []{return OJ_SHUTDOWN;});
 }
 
 const char *OJ_CONFIG_FILE = "./wjudger.cfg";
@@ -41,83 +41,83 @@ const char *OJ_URL = "localhost:8080/";
 const char *OJ_TOKEN = "123456";
 
 static void print_help(const char *name){
-	printf("Usage: %s [options]\n", name);
-	printf("Options:\n");
-	printf("-h, --help\t\tDisplay help message.\n");
-	printf("-v, --version\t\tDisplay version message.\n");
-	printf("-i, --once\t\tRun once: judge one solution and exit.\n");
+  printf("Usage: %s [options]\n", name);
+  printf("Options:\n");
+  printf("-h, --help\t\tDisplay help message.\n");
+  printf("-v, --version\t\tDisplay version message.\n");
+  printf("-i, --once\t\tRun once: judge one solution and exit.\n");
 }
 
 static void print_version(const char *name){
 }
 
 void call_for_exit(int s){
-	DLOG(WARNING)<<"Shutting down...";
-	{
-		std::lock_guard<std::mutex> lk(SHUTDOWN_MUTEX);
-		OJ_SHUTDOWN = true;
-	}
-	SHUTDOWN_CV.notify_all();
+  DLOG(WARNING)<<"Shutting down...";
+  {
+    std::lock_guard<std::mutex> lk(SHUTDOWN_MUTEX);
+    OJ_SHUTDOWN = true;
+  }
+  SHUTDOWN_CV.notify_all();
 }
 
 //static std::unique_ptr<std::vector<Judger>> readConfig(){
-//	std::unique_ptr<std::vector<Judger>> judgers = std::make_unique<std::vector<Judger>>();
+//  std::unique_ptr<std::vector<Judger>> judgers = std::make_unique<std::vector<Judger>>();
 //
-//	if(!root["judgers"].isArray()){
-//		LOG(FATAL)<<"judgers should be an array!";
-//	}
+//  if(!root["judgers"].isArray()){
+//    LOG(FATAL)<<"judgers should be an array!";
+//  }
 //
-//	int judgers_length = root["judgers"].getLength();
+//  int judgers_length = root["judgers"].getLength();
 //
-//	for(int i=0;i<judgers_length;++i){
-//		std::string name = std::string(root["judgers"][i]);
-//		judgers->emplace_back(name, root[name]);
-//	}
-//	return judgers;
+//  for(int i=0;i<judgers_length;++i){
+//    std::string name = std::string(root["judgers"][i]);
+//    judgers->emplace_back(name, root[name]);
+//  }
+//  return judgers;
 //}
 
 int main(int argc, char* argv[])
 {
-	//google::InitGoogleLogging(argv[0]);
-	bool run_once = false;
+  //google::InitGoogleLogging(argv[0]);
+  bool run_once = false;
 
-	static const struct option longopts[] = {
-		{"help", no_argument, NULL, 'h'},
-		{"version", no_argument, NULL, 'v'},
-		{"once", no_argument, NULL, 'i'},
-		{NULL, 0, NULL, 0},
-	};
-	int optc;
-	while((optc = getopt_long(argc, argv, ":hvw:i", longopts, NULL)) != -1){
-		switch(optc){
-			case 'h':
-				print_help(argv[0]);
-				return 0;
-			case 'v':
-				print_version(argv[0]);
-				return 0;
-			case 'i':
-				run_once = true;
-				break;
-			default:
-				fprintf(stderr,"Try `%s --help` for more information.\n", argv[0]);
-				return 0;
-		}
-	}
+  static const struct option longopts[] = {
+    {"help", no_argument, NULL, 'h'},
+    {"version", no_argument, NULL, 'v'},
+    {"once", no_argument, NULL, 'i'},
+    {NULL, 0, NULL, 0},
+  };
+  int optc;
+  while((optc = getopt_long(argc, argv, ":hvw:i", longopts, NULL)) != -1){
+    switch(optc){
+      case 'h':
+        print_help(argv[0]);
+        return 0;
+      case 'v':
+        print_version(argv[0]);
+        return 0;
+      case 'i':
+        run_once = true;
+        break;
+      default:
+        fprintf(stderr,"Try `%s --help` for more information.\n", argv[0]);
+        return 0;
+    }
+  }
 
   // register sigactions
-	struct sigaction new_action;
-	new_action.sa_handler = call_for_exit;
-	sigemptyset (&new_action.sa_mask);
-	new_action.sa_flags = 0;
-	safecall(sigaction, SIGQUIT, &new_action, NULL);
-	safecall(sigaction, SIGTERM, &new_action, NULL);
-	safecall(sigaction, SIGINT, &new_action, NULL);
+  struct sigaction new_action;
+  new_action.sa_handler = call_for_exit;
+  sigemptyset (&new_action.sa_mask);
+  new_action.sa_flags = 0;
+  safecall(sigaction, SIGQUIT, &new_action, NULL);
+  safecall(sigaction, SIGTERM, &new_action, NULL);
+  safecall(sigaction, SIGINT, &new_action, NULL);
 
   // load config file
-	libconfig::Config cfg;
-	cfg.readFile(OJ_CONFIG_FILE);
-	const libconfig::Setting& setting = cfg.getRoot();
+  libconfig::Config cfg;
+  cfg.readFile(OJ_CONFIG_FILE);
+  const libconfig::Setting& setting = cfg.getRoot();
 
   // create temporary folder and cd into it
   char oj_home_template[] = "/tmp/W-Judger.XXXXXX";
@@ -126,18 +126,18 @@ int main(int argc, char* argv[])
     perror("Failed to create temporary folder: ");
     return -1;
   }
-	safecall(chdir, oj_home);
-	safecall(unshare, CLONE_FS);
+  safecall(chdir, oj_home);
+  safecall(unshare, CLONE_FS);
 
   // create judger instance
-	std::unique_ptr<Judger> judger = std::make_unique<Judger>(setting);
+  std::unique_ptr<Judger> judger = std::make_unique<Judger>(setting);
 
   // run server
-	WServer wserver;
-	wserver.Run(std::move(judger));
+  WServer wserver;
+  wserver.Run(std::move(judger));
 
   safecall(rmdir, oj_home);
 
-	return 0;
+  return 0;
 }
 

@@ -24,129 +24,129 @@ using namespace grpc;
 using namespace WJudger;
 
 class GrpcTask final: public JudgeTask{
-	public:
-	GrpcTask(const JudgeArgs * args, ServerWriter<JudgeReply> *writer):args(args), writer(writer){
-	}
+  public:
+  GrpcTask(const JudgeArgs * args, ServerWriter<JudgeReply> *writer):args(args), writer(writer){
+  }
 
-	int language() const override{
-		return args->language();
-	}
+  int language() const override{
+    return args->language();
+  }
 
-	std::string code() const override{
-		return args->code();
-	}
+  std::string code() const override{
+    return args->code();
+  }
 
-	private:
-		const JudgeArgs *args;
-		ServerWriter<JudgeReply> *writer;
+  private:
+    const JudgeArgs *args;
+    ServerWriter<JudgeReply> *writer;
 };
 
 class SimpleGrpcTask final: public SimpleTask{
-	public:
-	SimpleGrpcTask(const SimpleArgs *args, SimpleReply *reply):args(args), reply(reply){
-	}
-	int language() const override{
-		return args->language();
-	}
-	std::string code() const override{
-		return args->code();
-	}
-	std::string input() const override{
-		return args->input();
-	}
+  public:
+  SimpleGrpcTask(const SimpleArgs *args, SimpleReply *reply):args(args), reply(reply){
+  }
+  int language() const override{
+    return args->language();
+  }
+  std::string code() const override{
+    return args->code();
+  }
+  std::string input() const override{
+    return args->input();
+  }
 
-	void set_compileerror(std::string err) const override{
-		reply->set_compileerror(true);
-		reply->set_compileerrormessage(err);
-	}
+  void set_compileerror(std::string err) const override{
+    reply->set_compileerror(true);
+    reply->set_compileerrormessage(err);
+  }
 
-	void set_runtimeerror(std::string err) const override{
-		reply->set_runtimeerror(true);
-		reply->set_runtimeerrormessage(err);
-	}
+  void set_runtimeerror(std::string err) const override{
+    reply->set_runtimeerror(true);
+    reply->set_runtimeerrormessage(err);
+  }
 
-	void set_timeused(long long t) const override{
-		reply->set_timeused(t);
-	}
+  void set_timeused(long long t) const override{
+    reply->set_timeused(t);
+  }
 
-	void set_memoryused(long long m) const override{
-		reply->set_memoryused(m);
-	}
+  void set_memoryused(long long m) const override{
+    reply->set_memoryused(m);
+  }
 
-	void set_output(std::string o) const override{
-		reply->set_output(o);
-	}
+  void set_output(std::string o) const override{
+    reply->set_output(o);
+  }
 
-	bool check_token(std::string t) const override{
-		bool ret = t == args->token();
-		if(!ret){
-			reply->set_status(JudgeStatus::UNAUTHENTICATED);
-		}
-		return ret;
-	}
+  bool check_token(std::string t) const override{
+    bool ret = t == args->token();
+    if(!ret){
+      reply->set_status(JudgeStatus::UNAUTHENTICATED);
+    }
+    return ret;
+  }
 
-	void set_status(uint32_t status) const override{
-		switch(status){
-			case STATUS_OK:
-				reply->set_status(JudgeStatus::OK);
-				break;
-			case STATUS_BUSY:
-				reply->set_status(JudgeStatus::BUSY);
-				break;
-			default:
-				LOG(FATAL)<<"invalid status";
-		}
-	}
+  void set_status(uint32_t status) const override{
+    switch(status){
+      case STATUS_OK:
+        reply->set_status(JudgeStatus::OK);
+        break;
+      case STATUS_BUSY:
+        reply->set_status(JudgeStatus::BUSY);
+        break;
+      default:
+        LOG(FATAL)<<"invalid status";
+    }
+  }
 
-	private:
-		const SimpleArgs *args;
-		SimpleReply *reply;
+  private:
+    const SimpleArgs *args;
+    SimpleReply *reply;
 };
 
 class WJudgerImpl final : public WJudger::WJudger::Service {
-	public:
-	void setJudger(std::unique_ptr<Judger> _judger){
-		judger = std::move(_judger);
-	}
+  public:
+  void setJudger(std::unique_ptr<Judger> _judger){
+    judger = std::move(_judger);
+  }
 
-	private:
-	std::unique_ptr<Judger> judger;
+  private:
+  std::unique_ptr<Judger> judger;
 
-	Status Judge(ServerContext *context, const JudgeArgs *args, ServerWriter<JudgeReply> *writer) override {
-		safecall(unshare, CLONE_FS);
+  Status Judge(ServerContext *context, const JudgeArgs *args, ServerWriter<JudgeReply> *writer) override {
+    safecall(unshare, CLONE_FS);
 
-		/*
-		for(Judger &judger: *judgers){
-			if(judger.token_match("123456")){ //TODO: add token in args
-				judger.judge(GrpcTask(args, writer));
-				return Status::OK;
-			}
-		}*/
-		const JudgeReply reply;//TODO: reply no match
-		writer->Write(reply);
-		return Status::OK;
-	}
+    /*
+    for(Judger &judger: *judgers){
+      if(judger.token_match("123456")){ //TODO: add token in args
+        judger.judge(GrpcTask(args, writer));
+        return Status::OK;
+      }
+    }*/
+    const JudgeReply reply;//TODO: reply no match
+    writer->Write(reply);
+    return Status::OK;
+  }
 
-	Status Simple(ServerContext *context, const SimpleArgs *args, SimpleReply *reply) override{
-		safecall(unshare, CLONE_FS);
+  Status Simple(ServerContext *context, const SimpleArgs *args, SimpleReply *reply) override{
+    safecall(unshare, CLONE_FS);
 
-		judger->simple(SimpleGrpcTask(args, reply));
-		return Status::OK;
-	}
+    judger->simple(SimpleGrpcTask(args, reply));
+    return Status::OK;
+  }
 };
 
 void WServer::Run(std::unique_ptr<Judger> judger){
-	std::string address("[::]:9717");
-	WJudgerImpl impl;
-	impl.setJudger(std::move(judger));
+  std::string address("[::]:9717");
+  WJudgerImpl impl;
+  impl.setJudger(std::move(judger));
 
-	ServerBuilder builder;
+  ServerBuilder builder;
 
-	builder.AddListeningPort(address, InsecureServerCredentials());
-	builder.RegisterService(&impl);
+  builder.AddListeningPort(address, InsecureServerCredentials());
+  builder.RegisterService(&impl);
 
-	std::unique_ptr<Server> server(builder.BuildAndStart());
+  std::unique_ptr<Server> server(builder.BuildAndStart());
 
-	//server->Wait();
-	oj_wait_shutdown();
+  //server->Wait();
+  oj_wait_shutdown();
 }

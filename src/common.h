@@ -83,14 +83,14 @@ static std::string readFile(const std::string &fileName)
 static void writeFile(const std::string &fileName, const std::string &str)
 {
     std::ofstream ofs(fileName.c_str(), std::ios::out);
-	ofs<<str;
+  ofs<<str;
 }
 
 static void dpause(){
   return;
-	int t;
-	std::cout<<"pause"<<std::endl;
-	std::cin>>t;
+  int t;
+  std::cout<<"pause"<<std::endl;
+  std::cin>>t;
 }
 
 #endif // _COMMON_H_

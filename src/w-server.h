@@ -29,7 +29,7 @@
 class WServer
 {
 public:
-	void Run(std::unique_ptr<Judger>);
+  void Run(std::unique_ptr<Judger>);
 
 protected:
 

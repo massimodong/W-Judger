@@ -34,7 +34,7 @@ static struct sock_filter filter[] = {
     BPF_STMT(BPF_LD+BPF_W+BPF_ABS, offsetof(struct seccomp_data, nr)),
 
     /* list of denied syscalls */
-	SYSCALL_ALLOWED_EXTENDED(Deny),
+  SYSCALL_ALLOWED_EXTENDED(Deny),
 
     /* and if we don't match above, ok */
     BPF_STMT(BPF_RET+BPF_K, SECCOMP_RET_ALLOW),
@@ -45,21 +45,21 @@ static struct sock_fprog filterprog = {
 };
 
 static void _wjudger_exit(int s, siginfo_t *info, void *ucontext){
-	fprintf(stderr, "Not allowed system call: %d\n", info->si_syscall);
-	exit(-1);
+  fprintf(stderr, "Not allowed system call: %d\n", info->si_syscall);
+  exit(-1);
 }
 
 __attribute__((constructor(0))) static void _wjudger_load_seccomp(){
-	struct sigaction new_action;
-	new_action.sa_sigaction = _wjudger_exit;
-	sigemptyset (&new_action.sa_mask);
-	new_action.sa_flags = SA_SIGINFO;
-	
-	if(sigaction(SIGSYS, &new_action, NULL)){
-		exit(-1);
-	}
+  struct sigaction new_action;
+  new_action.sa_sigaction = _wjudger_exit;
+  sigemptyset (&new_action.sa_mask);
+  new_action.sa_flags = SA_SIGINFO;
+  
+  if(sigaction(SIGSYS, &new_action, NULL)){
+    exit(-1);
+  }
 
-	if (prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0)) {
+  if (prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0)) {
         exit(-1);
     }
     if (prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER, &filterprog)) {

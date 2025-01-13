@@ -32,22 +32,22 @@
 class Judger
 {
 public:
-	Judger(const libconfig::Setting &);
-	Judger(Judger &&) = default;
-	Judger &operator=(Judger &&) = default;
-	Judger (const Judger &) = delete;
-	Judger &operator =(const Judger &) = delete;
-	~Judger();
+  Judger(const libconfig::Setting &);
+  Judger(Judger &&) = default;
+  Judger &operator=(Judger &&) = default;
+  Judger (const Judger &) = delete;
+  Judger &operator =(const Judger &) = delete;
+  ~Judger();
 
-	void judge(const JudgeTask &);
-	void simple(const SimpleTask &);
+  void judge(const JudgeTask &);
+  void simple(const SimpleTask &);
 protected:
 
 private:
-	std::string token;
-	std::unique_ptr<Sandbox> sandbox;
+  std::string token;
+  std::unique_ptr<Sandbox> sandbox;
 
-	std::unique_ptr<std::mutex> mutex;
+  std::unique_ptr<std::mutex> mutex;
 };
 
 #endif // _JUDGER_H_
