@@ -21,13 +21,30 @@
 
 Judger::Judger(const libconfig::Setting &setting):
   sandbox(std::make_unique<Sandbox>()),
-  mutex(std::make_unique<std::mutex>()),
   token(std::string(setting["token"])),
   address(std::string(setting["address"])){
+
+    std::lock_guard<std::mutex> lk(mutex);
+    is_working = false;
 }
 
 Judger::~Judger(){
   LOG(INFO)<<"destroying judger";
+}
+
+bool Judger::start_working(){
+    std::lock_guard<std::mutex> lk(mutex);
+    if(is_working){
+      return false;
+    }else{
+      is_working = true;
+      return true;
+    }
+}
+
+void Judger::finish_working(){
+    std::lock_guard<std::mutex> lk(mutex);
+    is_working = false;
 }
 
 void Judger::judge(const JudgeTask &task){
@@ -79,6 +96,12 @@ void Judger::simple(const SimpleTask &task){
   if(!task.check_token(token)){
     return;
   }
+
+  if(!start_working()){
+    task.set_status(STATUS_BUSY);
+    return;
+  }
+
   sandbox->ready();
   dpause();
 
@@ -109,5 +132,7 @@ void Judger::simple(const SimpleTask &task){
     task.set_memoryused(data.memory_used);
     task.set_output(getFdContent(fd_out));
   }
+
   sandbox->clean();
+  finish_working();
 }

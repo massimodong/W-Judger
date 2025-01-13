@@ -50,7 +50,12 @@ private:
 
   std::unique_ptr<Sandbox> sandbox;
 
-  std::unique_ptr<std::mutex> mutex;
+  std::mutex mutex;
+
+  bool is_working;
+
+  bool start_working();
+  void finish_working();
 };
 
 #endif // _JUDGER_H_
