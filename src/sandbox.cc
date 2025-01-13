@@ -32,8 +32,10 @@ const static uint64_t SIMPLE_MEMORY = 1024 * STD_MB;
 
 const static uint64_t RUN_FILE_SIZE = 2048 * STD_MB;
 
-#define LIB_WJUDGER_SECCOMP_LOADER_PATH "/home/massimo/W/proj/wzoj-judger2/Debug/src/libwjudger_seccomp_loader.a"
-#define WLAUNCHER_PATH "/home/massimo/W/proj/wzoj-judger2/Debug/src/wzoj_judger2_launcher"
+#define SANDBOX_NAME "sandbox"
+
+#define LIB_WJUDGER_SECCOMP_LOADER_PATH "/home/massimo/W/proj/W-Judger/build/liblibwjudger_seccomp_loader.a"
+#define WLAUNCHER_PATH "/home/massimo/W/proj/W-Judger/build/wjudger-launcher"
 
 #define BINDDIRS(ACTION)\
 	ACTION("bin");\
@@ -49,10 +51,10 @@ const static uint64_t RUN_FILE_SIZE = 2048 * STD_MB;
 	safecall(umount, "compile/" s);\
 	safecall(rmdir, "compile/" s);
 
-Sandbox::Sandbox(int id):name(std::to_string(id)){
-	LOG(INFO)<<"creating sandbox "<<name;
-	safecall(mkdir, name.c_str(), S_IRWXU);
-	safecall(chdir, name.c_str());
+Sandbox::Sandbox(){
+	LOG(INFO)<<"creating sandbox";
+	safecall(mkdir, SANDBOX_NAME, S_IRWXU);
+	safecall(chdir, SANDBOX_NAME);
 	safecall(mkdir, "compile", S_IRWXU);
 	safecall(chown, "compile", JUDGER_UID, JUDGER_UID);
 	safecall(mkdir, "run", S_IRWXU);
@@ -63,14 +65,14 @@ Sandbox::Sandbox(int id):name(std::to_string(id)){
 }
 
 Sandbox::~Sandbox(){
-	LOG(INFO)<<"removing sandbox "<<name;
-	safecall(chdir, name.c_str());
+	LOG(INFO)<<"removing sandbox";
+	safecall(chdir, SANDBOX_NAME);
 	BINDDIRS(UBIND);
 	safecall(unlink, "compile/libwjudger_seccomp_loader.a");
 	safecall(rmdir, "compile");
 	safecall(rmdir, "run");
 	safecall(chdir, "..");
-	safecall(rmdir, name.c_str());
+	safecall(rmdir, SANDBOX_NAME);
 }
 
 static const char *LANGUAGE_FILE_NAMES[] = {
@@ -82,7 +84,7 @@ static const char *LANGUAGE_FILE_NAMES[] = {
 };
 
 void Sandbox::ready(){
-	safecall(chdir, name.c_str());
+	safecall(chdir, SANDBOX_NAME);
 }
 
 void Sandbox::clean(){
@@ -222,7 +224,7 @@ int Sandbox::raw_compile(int language, int fd_ce){
 
 
 [[ noreturn ]] static void spawnedProcess(const char *exe, std::vector<std::pair<int, int>> mappings, int status_fd){
-	char fd_str[30];
+	char fd_str[30]; //TODO: magic number
 	const char *Main[] = { WLAUNCHER_PATH, exe, fd_str, NULL };
 
 	int snret = snprintf(fd_str, sizeof(fd_str), "%d", status_fd);

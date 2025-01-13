@@ -19,79 +19,40 @@
 
 #include "judger.h"
 
-Judger::Judger(std::string name, libconfig::Setting &setting):name(name), mutex(std::make_unique<std::mutex>()){
-	LOG(INFO)<<"creating "<<name.c_str();
-
-	token = std::string(setting["token"]);
-	sandbox_size = int(setting["sandbox_size"]);
-
-	safecall(mkdir, name.c_str(), S_IRWXU);
-	safecall(chdir, name.c_str());
-	for(int i=0;i<sandbox_size;++i){
-		sandboxes.push(std::make_unique<Sandbox>(i));
-	}
-	safecall(chdir, "..");
+Judger::Judger(const libconfig::Setting &setting):
+  sandbox(std::make_unique<Sandbox>()),
+  mutex(std::make_unique<std::mutex>()),
+  token(std::string(setting["token"])){
 }
 
 Judger::~Judger(){
-	LOG(INFO)<<"destroying "<<name.c_str();
-	safecall(chdir, name.c_str());
-	while(!sandboxes.empty()) sandboxes.pop();
-	safecall(chdir, "..");
-	safecall(rmdir, name.c_str());
+	LOG(INFO)<<"destroying judger";
 }
 
 void Judger::judge(const JudgeTask &task){
-	safecall(chdir, name.c_str());
-
-	auto sandbox = fetch_sandbox();
-
-	if(sandbox){
-		sandbox->ready();
-
-		int fd_ce = sandbox->open_ram_file();
-		int id = sandbox->compile(task.language(), task.code(), fd_ce);
-		if(id == -1){
-			LOG(INFO)<<"ce";
-			//TODO: report CE
-		}else{
-			//TODO: read testcases
-			//TODO: report compile success
-			//TODO: read from config file the judging procedure
-
-			int fd_out = sandbox->open_file("user.out");
-			//TODO: something like
-			// usage = sandbox->execute_program(id, mappings)
-			// where `id` is returned from compile
-			// and `mappings` is std::vector<std::pair<int, int>> where we redirect `first` to `second` using dup2(2) (here, 1 -> fd_out)
-			// and `usage` contains time and memory usage of this program
-		}
-
-		dpause();
-
-		sandbox->clean();
-		return_sandbox(std::move(sandbox));
-	}else{
-		//TODO: reply busy
-	}
-
-	safecall(chdir, "..");
-}
-
-std::unique_ptr<Sandbox> Judger::fetch_sandbox(){
-	std::lock_guard<std::mutex> lk(*mutex);
-	if(sandboxes.empty()){
-		return nullptr;
-	}else{
-		auto sandbox = std::move(sandboxes.front());
-		sandboxes.pop();
-		return sandbox;
-	}
-}
-
-void Judger::return_sandbox(std::unique_ptr<Sandbox> sandbox){
-	std::lock_guard<std::mutex> lk(*mutex);
-	sandboxes.push(std::move(sandbox));
+  sandbox->ready();
+  
+  int fd_ce = sandbox->open_ram_file();
+  int id = sandbox->compile(task.language(), task.code(), fd_ce);
+  if(id == -1){
+  	LOG(INFO)<<"ce";
+  	//TODO: report CE
+  }else{
+  	//TODO: read testcases
+  	//TODO: report compile success
+  	//TODO: read from config file the judging procedure
+  
+  	int fd_out = sandbox->open_file("user.out");
+  	//TODO: something like
+  	// usage = sandbox->execute_program(id, mappings)
+  	// where `id` is returned from compile
+  	// and `mappings` is std::vector<std::pair<int, int>> where we redirect `first` to `second` using dup2(2) (here, 1 -> fd_out)
+  	// and `usage` contains time and memory usage of this program
+  }
+  
+  dpause();
+  
+  sandbox->clean();
 }
 
 static std::string getFdContent(int fd, size_t length = 4096){
@@ -117,43 +78,35 @@ void Judger::simple(const SimpleTask &task){
 	if(!task.check_token(token)){
 		return;
 	}
-	safecall(chdir, name.c_str());
-	auto sandbox = fetch_sandbox();
-	if(sandbox){
-		sandbox->ready();
-		dpause();
-		int fd_ce = sandbox->open_ram_file();
-		int exe_id = sandbox->compile(task.language(), task.code(), fd_ce);
-		if(exe_id == -1){
-			LOG(INFO)<<"ce";
-			task.set_compileerror(getFdContent(fd_ce));
-		}else{
-			writeFile("user.in", task.input()); //TODO: this can be a ramfile too
-			int fd_in = sandbox->open_file("user.in");
-			int fd_out = sandbox->open_ram_file();
-			int fd_err = sandbox->open_ram_file();
-			dpause();
-			std::vector<std::pair<int, int>> mappings;
-			mappings.push_back(std::make_pair(0, fd_in));
-			mappings.push_back(std::make_pair(1, fd_out));
-			mappings.push_back(std::make_pair(2, fd_err));
-			auto data = sandbox->execute_program(exe_id, mappings);
-			LOG(INFO)<<"RE: "<<data.re();
-			LOG(INFO)<<"time: "<<data.time_used;
-			LOG(INFO)<<"memory: "<<data.memory_used;
-			dpause();
+  sandbox->ready();
+  dpause();
 
-			if(data.re()) task.set_runtimeerror(getFdContent(fd_err));
-			task.set_timeused(data.time_used);
-			task.set_memoryused(data.memory_used);
-			task.set_output(getFdContent(fd_out));
+  int fd_ce = sandbox->open_ram_file();
+  int exe_id = sandbox->compile(task.language(), task.code(), fd_ce);
 
-		}
-
-		sandbox->clean();
-		return_sandbox(std::move(sandbox));
-	}else{
-		task.set_status(STATUS_BUSY);
-	}
-	safecall(chdir, "..");
+  if(exe_id == -1){
+  	LOG(INFO)<<"ce";
+  	task.set_compileerror(getFdContent(fd_ce));
+  }else{
+  	writeFile("user.in", task.input()); //TODO: this can be a ramfile too
+  	int fd_in = sandbox->open_file("user.in");
+  	int fd_out = sandbox->open_ram_file();
+  	int fd_err = sandbox->open_ram_file();
+  	dpause();
+  	std::vector<std::pair<int, int>> mappings;
+  	mappings.push_back(std::make_pair(0, fd_in));
+  	mappings.push_back(std::make_pair(1, fd_out));
+  	mappings.push_back(std::make_pair(2, fd_err));
+  	auto data = sandbox->execute_program(exe_id, mappings);
+  	LOG(INFO)<<"RE: "<<data.re();
+  	LOG(INFO)<<"time: "<<data.time_used;
+  	LOG(INFO)<<"memory: "<<data.memory_used;
+  	dpause();
+  
+  	if(data.re()) task.set_runtimeerror(getFdContent(fd_err));
+  	task.set_timeused(data.time_used);
+  	task.set_memoryused(data.memory_used);
+  	task.set_output(getFdContent(fd_out));
+  }
+  sandbox->clean();
 }

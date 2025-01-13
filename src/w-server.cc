@@ -105,12 +105,12 @@ class SimpleGrpcTask final: public SimpleTask{
 
 class WJudgerImpl final : public WJudger::WJudger::Service {
 	public:
-	void setJudgers(std::unique_ptr<std::vector<Judger>> _judgers){
-		judgers = std::move(_judgers);
+	void setJudger(std::unique_ptr<Judger> _judger){
+		judger = std::move(_judger);
 	}
 
 	private:
-	std::unique_ptr<std::vector<Judger>> judgers;
+	std::unique_ptr<Judger> judger;
 
 	Status Judge(ServerContext *context, const JudgeArgs *args, ServerWriter<JudgeReply> *writer) override {
 		safecall(unshare, CLONE_FS);
@@ -130,20 +130,15 @@ class WJudgerImpl final : public WJudger::WJudger::Service {
 	Status Simple(ServerContext *context, const SimpleArgs *args, SimpleReply *reply) override{
 		safecall(unshare, CLONE_FS);
 
-		if(args->judgerid() < judgers->size()){
-			Judger &judger = (*judgers)[args->judgerid()];
-			judger.simple(SimpleGrpcTask(args, reply));
-			return Status::OK;
-		}else{
-			return Status(StatusCode::NOT_FOUND, "judger not found");
-		}
+		judger->simple(SimpleGrpcTask(args, reply));
+		return Status::OK;
 	}
 };
 
-void WServer::Run(std::unique_ptr<std::vector<Judger>> judgers){
+void WServer::Run(std::unique_ptr<Judger> judger){
 	std::string address("[::]:9717");
 	WJudgerImpl impl;
-	impl.setJudgers(std::move(judgers));
+	impl.setJudger(std::move(judger));
 
 	ServerBuilder builder;
 

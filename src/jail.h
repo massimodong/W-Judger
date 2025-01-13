@@ -3,7 +3,7 @@
 
 #include <unistd.h>
 
-const int JUDGER_UID = 1537;
+const int JUDGER_UID = 65534;
 
 static void jail(){
 	while(chroot("./") == -1);

@@ -39,7 +39,7 @@ class ExecuteData{
 class Sandbox
 {
 public:
-	Sandbox(int);
+	Sandbox();
 	~Sandbox();
 
 	void ready();
@@ -51,8 +51,6 @@ public:
 protected:
 
 private:
-	std::string name;
-
 	std::vector<std::string> executable_files;
 	std::vector<std::pair<int, std::string>> normal_files;
 	std::vector<int> ram_files;

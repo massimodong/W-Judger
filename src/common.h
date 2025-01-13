@@ -42,8 +42,6 @@
 extern bool OJ_SHUTDOWN;
 void oj_wait_shutdown();
 
-extern const char *OJ_CONFIG_DIR;
-extern const char *OJ_HOME;
 extern int OJ_SLEEP_TIME;
 extern int OJ_CNT_WORKERS;
 extern const char *OJ_URL;
@@ -89,7 +87,7 @@ static void writeFile(const std::string &fileName, const std::string &str)
 }
 
 static void dpause(){
-	return;
+  return;
 	int t;
 	std::cout<<"pause"<<std::endl;
 	std::cin>>t;

@@ -34,8 +34,7 @@ void oj_wait_shutdown(){
 	SHUTDOWN_CV.wait(lk, []{return OJ_SHUTDOWN;});
 }
 
-const char *OJ_CONFIG_DIR = "/etc/wjudger";
-const char *OJ_HOME = "/home/judger";
+const char *OJ_CONFIG_FILE = "./wjudger.cfg";
 int OJ_SLEEP_TIME = 1;
 int OJ_CNT_WORKERS = 1;
 const char *OJ_URL = "localhost:8080/";
@@ -61,25 +60,21 @@ void call_for_exit(int s){
 	SHUTDOWN_CV.notify_all();
 }
 
-static std::unique_ptr<std::vector<Judger>> readConfig(){
-	std::unique_ptr<std::vector<Judger>> judgers = std::make_unique<std::vector<Judger>>();
-	libconfig::Config cfg;
-	cfg.setIncludeDir(OJ_CONFIG_DIR);
-	cfg.readFile((OJ_CONFIG_DIR + std::string("/wjudger.cfg")).c_str());
-	const libconfig::Setting& root = cfg.getRoot();
-
-	if(!root["judgers"].isArray()){
-		LOG(FATAL)<<"judgers should be an array!";
-	}
-
-	int judgers_length = root["judgers"].getLength();
-
-	for(int i=0;i<judgers_length;++i){
-		std::string name = std::string(root["judgers"][i]);
-		judgers->emplace_back(name, root[name]);
-	}
-	return judgers;
-}
+//static std::unique_ptr<std::vector<Judger>> readConfig(){
+//	std::unique_ptr<std::vector<Judger>> judgers = std::make_unique<std::vector<Judger>>();
+//
+//	if(!root["judgers"].isArray()){
+//		LOG(FATAL)<<"judgers should be an array!";
+//	}
+//
+//	int judgers_length = root["judgers"].getLength();
+//
+//	for(int i=0;i<judgers_length;++i){
+//		std::string name = std::string(root["judgers"][i]);
+//		judgers->emplace_back(name, root[name]);
+//	}
+//	return judgers;
+//}
 
 int main(int argc, char* argv[])
 {
@@ -110,6 +105,7 @@ int main(int argc, char* argv[])
 		}
 	}
 
+  // register sigactions
 	struct sigaction new_action;
 	new_action.sa_handler = call_for_exit;
 	sigemptyset (&new_action.sa_mask);
@@ -118,16 +114,30 @@ int main(int argc, char* argv[])
 	safecall(sigaction, SIGTERM, &new_action, NULL);
 	safecall(sigaction, SIGINT, &new_action, NULL);
 
+  // load config file
+	libconfig::Config cfg;
+	cfg.readFile(OJ_CONFIG_FILE);
+	const libconfig::Setting& setting = cfg.getRoot();
 
-	safecall(chdir, OJ_HOME);
+  // create temporary folder and cd into it
+  char oj_home_template[] = "/tmp/W-Judger.XXXXXX";
+  char *oj_home = mkdtemp(oj_home_template);
+  if(oj_home == NULL){
+    perror("Failed to create temporary folder: ");
+    return -1;
+  }
+	safecall(chdir, oj_home);
 	safecall(unshare, CLONE_FS);
 
-	auto judgers = readConfig();
+  // create judger instance
+	std::unique_ptr<Judger> judger = std::make_unique<Judger>(setting);
 
-	//CpuSetManager::getInstance(); //initialize
-
+  // run server
 	WServer wserver;
-	wserver.Run(std::move(judgers));
+	wserver.Run(std::move(judger));
+
+  safecall(rmdir, oj_home);
+
 	return 0;
 }
 

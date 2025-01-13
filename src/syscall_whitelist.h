@@ -20,6 +20,7 @@
 	ACTION(prctl),\
 	ACTION(rt_sigaction),\
 	ACTION(readlink),\
+	ACTION(readlinkat),\
 	ACTION(mprotect),\
 	ACTION(arch_prctl),\
 	ACTION(uname),\

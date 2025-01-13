@@ -32,7 +32,7 @@
 class Judger
 {
 public:
-	Judger(std::string name, libconfig::Setting &);
+	Judger(const libconfig::Setting &);
 	Judger(Judger &&) = default;
 	Judger &operator=(Judger &&) = default;
 	Judger (const Judger &) = delete;
@@ -44,15 +44,10 @@ public:
 protected:
 
 private:
-	std::string name;
 	std::string token;
-	int sandbox_size;
-	std::queue<std::unique_ptr<Sandbox>> sandboxes;
+	std::unique_ptr<Sandbox> sandbox;
 
 	std::unique_ptr<std::mutex> mutex;
-
-	std::unique_ptr<Sandbox> fetch_sandbox();
-	void return_sandbox(std::unique_ptr<Sandbox>);
 };
 
 #endif // _JUDGER_H_
